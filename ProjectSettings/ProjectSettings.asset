@@ -656,6 +656,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
+    Android: ALTERUNA;ALTERUNA_V_1_X_X_X;ALTERUNA_V_1_3_X_X;ALTERUNA_V_1_3_4_X;ALTERUNA_V_1_3_4_11
     Standalone: ALTERUNA;ALTERUNA_V_1_X_X_X;ALTERUNA_V_1_3_X_X;ALTERUNA_V_1_3_4_X;ALTERUNA_V_1_3_4_11
     WebGL: ALTERUNA;ALTERUNA_V_1_X_X_X;ALTERUNA_V_1_3_X_X;ALTERUNA_V_1_3_4_X;ALTERUNA_V_1_3_4_11
   additionalCompilerArguments: {}

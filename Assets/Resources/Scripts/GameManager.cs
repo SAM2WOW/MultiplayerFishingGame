@@ -21,9 +21,10 @@ public class GameManager : MonoBehaviour
     public float gameDuration = 30f;       // 30 seconds game time
     
     // Game state
-    private enum GameState { Initializing, Countdown, Playing, Finished }
+    private enum GameState { NotStarted, Initializing, Countdown, Playing, Finished }
     private GameState currentState;
     private float gameTimer;
+    private Coroutine gameSequenceCoroutine;
     
     void Start()
     {
@@ -36,6 +37,24 @@ public class GameManager : MonoBehaviour
         
         // Start the game sequence
         // StartCoroutine(GameSequence());
+    }
+    
+    // Public method that can be called by GameSelectManager
+    public void StartGameSequence()
+    {
+        // Don't start if already started
+        if (currentState != GameState.NotStarted)
+            return;
+        
+        // Initialize and start the game sequence
+        currentState = GameState.Initializing;
+        gameSequenceCoroutine = StartCoroutine(GameSequence());
+        
+        // Show countdown and timer UI
+        if (countdownText != null)
+            countdownText.gameObject.SetActive(true);
+        if (timerText != null)
+            timerText.gameObject.SetActive(true);
     }
     
     void Update()
