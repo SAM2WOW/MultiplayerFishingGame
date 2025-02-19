@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Alteruna;
+using Alteruna.Trinity;
 
 public class GameSelectManager : MonoBehaviour
 {
@@ -7,6 +9,7 @@ public class GameSelectManager : MonoBehaviour
     public GameObject mainMenuPanel;    // Main menu with Host/Player buttons
     public GameObject hostGameObject;   // Contains all host-specific UI/functionality
     public GameObject playerGameObject; // Contains all player-specific UI/functionality
+    public GameObject multiplayerLobbyMenu; // Contains all multiplayer lobby UI/functionality
     
     [Header("Button References")]
     public Button hostButton;          // Button to select host mode
@@ -16,6 +19,9 @@ public class GameSelectManager : MonoBehaviour
     
     [Header("Game Manager Reference")]
     public GameManager gameManager;    // Reference to your game manager
+    
+    public enum PlayerType { Host, Player }
+    public PlayerType playerType;
     
     void Start()
     {
@@ -42,6 +48,7 @@ public class GameSelectManager : MonoBehaviour
         SetActiveState(mainMenuPanel, true);
         SetActiveState(hostGameObject, false);
         SetActiveState(playerGameObject, false);
+        SetActiveState(multiplayerLobbyMenu, false);
     }
     
     void SelectHostMode()
@@ -53,14 +60,46 @@ public class GameSelectManager : MonoBehaviour
 
         SetActiveState(hostButton.gameObject, false);
         SetActiveState(playerButton.gameObject, false);
+        // SetActiveState(startGameButton.gameObject, false);
+
+        // create multiplayer room with random int name
+        gameManager.createRoom();
+
+        // Set player type to host
+        playerType = PlayerType.Host;
     }
+    
     
     void SelectPlayerMode()
     {
         // Show player panel, hide others
         SetActiveState(mainMenuPanel, false);
         SetActiveState(hostGameObject, false);
+        SetActiveState(playerGameObject, false);
+        SetActiveState(multiplayerLobbyMenu, true);
+
+        // Set player type to player
+        playerType = PlayerType.Player;
+    }
+    public void onRoomCreated()
+    {
+        if (playerType != PlayerType.Host)
+            return;
+        
+        // Show start game button
+        SetActiveState(startGameButton.gameObject, true);
+    }
+
+    public void OnPlayerRoomJoined()
+    {
+        if (playerType != PlayerType.Player)
+            return;
+        
+        // Show player panel, hide others
+        SetActiveState(mainMenuPanel, false);
+        SetActiveState(hostGameObject, false);
         SetActiveState(playerGameObject, true);
+        SetActiveState(multiplayerLobbyMenu, false);
     }
     
     void StartGame()

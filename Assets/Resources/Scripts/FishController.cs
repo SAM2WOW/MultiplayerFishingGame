@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class FishController : MonoBehaviour
 {
+    [Header("Fish Settings")]
+    public int fishID = 0;
+    public enum FishSize { Small, Medium, Large }
+    public FishSize fishSize = FishSize.Small;
+
     // Public variables for adjusting behavior
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
@@ -153,5 +158,18 @@ public class FishController : MonoBehaviour
         {
             transform.position = mainCamera.ViewportToWorldPoint(viewportPosition);
         }
+    }
+
+    public void CatchFish()
+    {
+        // Add points to the player's score
+        // GameManager.Instance.AddPoints(fishPoints);
+        
+        // Play a sound effect
+        // if (GetComponent<AudioSource>())
+        //     GetComponent<AudioSource>().Play();
+        
+        // Destroy the fish
+        Destroy(gameObject);
     }
 }

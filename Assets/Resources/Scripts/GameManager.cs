@@ -3,24 +3,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Alteruna;
+using System.Collections.Generic;
 
 public class GameManager : Synchronizable
 {
     [Header("Fish Spawning")]
     public GameObject fishPrefab;  // Assign your fish prefab in inspector
-    public int numberOfFishToSpawn = 10;
+    public int numberOfFishToSpawn = 9;
     public float spawnAreaWidth = 8f;
     public float spawnAreaHeight = 4f;
-    
+    // keep track of the fishes in a list
+    public List<FishController> fishControllers = new List<FishController>();
+
     [Header("UI References")]
     public TextMeshProUGUI countdownText;  // Assign in inspector
     public TextMeshProUGUI timerText;      // Assign in inspector
     public TextMeshProUGUI playerTimerText;      // Assign in inspector
+    public TextMeshProUGUI roomNameText;      // Assign in inspector
     public GameObject gameOverPanel;       // Assign in inspector
     
     [Header("Game Settings")]
     public float countdownDuration = 3f;   // 3 seconds countdown
     public float gameDuration = 30f;       // 30 seconds game time
+    public Multiplayer multiplayerManager; // Reference to your multiplayer manager
     
     // Game state
     private enum GameState { NotStarted, Initializing, Countdown, Playing, Finished }
@@ -42,6 +47,14 @@ public class GameManager : Synchronizable
         
         // Start the game sequence
         // StartCoroutine(GameSequence());
+    }
+
+    public void createRoom()
+    {
+        string roomName = "FishRoom" + Random.Range(0, 1000);
+        multiplayerManager.CreateRoom(roomName, maxUsers: 10);
+
+        roomNameText.text = roomName;
     }
     
     // Public method that can be called by GameSelectManager
@@ -169,11 +182,54 @@ public class GameManager : Synchronizable
             FishController fishController = fish.GetComponent<FishController>();
             if (fishController != null)
             {
+                // Give Fish ID
+                fishController.fishID = i;
+
+                // Add fish controller to the list
+                fishControllers.Add(fishController);
+
+                // set the size enum of the fish (public enum FishSize { Small, Medium, Large })
+                // the first 3 is small, the next 3 is medium, the last 3 is large
+                if (i < 3)
+                {
+                    fishController.fishSize = FishController.FishSize.Small;
+                }
+                else if (i < 6)
+                {
+                    fishController.fishSize = FishController.FishSize.Medium;
+                }
+                else
+                {
+                    fishController.fishSize = FishController.FishSize.Large;
+                }
+
                 // Optional: Randomize fish parameters
-                fishController.moveSpeed = Random.Range(2f, 4f);
+                fishController.moveSpeed = Random.Range(1f, 3f);
                 fishController.turnRate = Random.Range(0.3f, 1.2f);
             }
         }
+    }
+
+    void CatchFish(int playerID, int fishID)
+    {
+        // Optional: You could add a score system here
+        // For example, increment a score variable and update a UI element
+        // You could also play a sound effect, particle effect, etc.
+        switch (fishControllers[fishID].fishSize)
+        {
+            case FishController.FishSize.Small:
+                // Small fish caught
+                break;
+            case FishController.FishSize.Medium:
+                // Medium fish caught
+                break;
+            case FishController.FishSize.Large:
+                // Large fish caught
+                break;
+        }
+
+        // Destroy the fish
+        fishControllers[fishID].CatchFish();
     }
     
     void UpdateTimerDisplay()
