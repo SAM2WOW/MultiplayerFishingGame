@@ -2,8 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Alteruna;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Synchronizable
 {
     [Header("Fish Spawning")]
     public GameObject fishPrefab;  // Assign your fish prefab in inspector
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public TextMeshProUGUI countdownText;  // Assign in inspector
     public TextMeshProUGUI timerText;      // Assign in inspector
+    public TextMeshProUGUI playerTimerText;      // Assign in inspector
     public GameObject gameOverPanel;       // Assign in inspector
     
     [Header("Game Settings")]
@@ -23,7 +25,9 @@ public class GameManager : MonoBehaviour
     // Game state
     private enum GameState { NotStarted, Initializing, Countdown, Playing, Finished }
     private GameState currentState;
-    private float gameTimer;
+    private GameState _oldCurrentState;
+    private float gameTimer = 0f;
+    private float _oldSynchronizedGameTimer = 0f;
     private Coroutine gameSequenceCoroutine;
     
     void Start()
@@ -34,6 +38,7 @@ public class GameManager : MonoBehaviour
         
         // Initialize state
         currentState = GameState.Initializing;
+        _oldCurrentState = currentState;
         
         // Start the game sequence
         // StartCoroutine(GameSequence());
@@ -42,8 +47,8 @@ public class GameManager : MonoBehaviour
     // Public method that can be called by GameSelectManager
     public void StartGameSequence()
     {
-        // Don't start if already started
-        if (currentState != GameState.NotStarted)
+        // Only start the game if it's not already started
+        if (currentState != GameState.Initializing)
             return;
         
         // Initialize and start the game sequence
@@ -55,17 +60,32 @@ public class GameManager : MonoBehaviour
             countdownText.gameObject.SetActive(true);
         if (timerText != null)
             timerText.gameObject.SetActive(true);
+        if (playerTimerText != null)
+            playerTimerText.gameObject.SetActive(true);
     }
     
     void Update()
     {
+        // If the value of our float has changed, sync it with the other players in our playroom.
+        if (gameTimer != _oldSynchronizedGameTimer)
+        {
+            // Store the updated value
+            _oldSynchronizedGameTimer = gameTimer;
+
+            // Tell Alteruna that we want to commit our data.
+            Commit();
+        }
+
+        // Update the Synchronizable
+        SyncUpdate();
+        UpdateTimerDisplay();
+
         if (currentState == GameState.Playing)
         {
             // Update game timer
             if (gameTimer > 0)
             {
                 gameTimer -= Time.deltaTime;
-                UpdateTimerDisplay();
                 
                 if (gameTimer <= 0)
                 {
@@ -74,6 +94,21 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public override void DisassembleData(Reader reader, byte LOD)
+		{
+			// Set our data to the updated value we have recieved from another player.
+			gameTimer = reader.ReadFloat();
+
+			// Save the new data as our old data, otherwise we will immediatly think it changed again.
+			_oldSynchronizedGameTimer = gameTimer;
+		}
+
+    public override void AssembleData(Writer writer, byte LOD)
+    {
+        // Write our data so that it can be sent to the other players in our playroom.
+        writer.Write(gameTimer);
     }
     
     IEnumerator GameSequence()
@@ -147,6 +182,12 @@ public class GameManager : MonoBehaviour
         {
             int seconds = Mathf.CeilToInt(gameTimer);
             timerText.text = $"Time: {seconds}";
+        }
+
+        if (playerTimerText != null)
+        {
+            int seconds = Mathf.CeilToInt(gameTimer);
+            playerTimerText.text = $"Time: {seconds}";
         }
     }
     
