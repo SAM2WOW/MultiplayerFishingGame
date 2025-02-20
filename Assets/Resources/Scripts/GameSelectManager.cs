@@ -60,7 +60,7 @@ public class GameSelectManager : MonoBehaviour
 
         SetActiveState(hostButton.gameObject, false);
         SetActiveState(playerButton.gameObject, false);
-        // SetActiveState(startGameButton.gameObject, false);
+        SetActiveState(startGameButton.gameObject, false);
 
         // create multiplayer room with random int name
         // gameManager.createRoom();
