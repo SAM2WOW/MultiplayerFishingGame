@@ -63,7 +63,8 @@ public class GameSelectManager : MonoBehaviour
         // SetActiveState(startGameButton.gameObject, false);
 
         // create multiplayer room with random int name
-        gameManager.createRoom();
+        // gameManager.createRoom();
+        SetActiveState(multiplayerLobbyMenu, true);
 
         // Set player type to host
         playerType = PlayerType.Host;
