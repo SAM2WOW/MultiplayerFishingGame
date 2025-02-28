@@ -1,0 +1,25 @@
+{
+  "name": "multiplayer-fishing-game",
+  "version": "1.0.0",
+  "description": "A multiplayer fishing game using Playroom kit and Phaser.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "http-server docs"
+  },
+  "dependencies": {
+    "phaser": "^3.60.0",
+    "playroomkit": "^1.0.0",
+    "nipplejs": "^0.10.1"
+  },
+  "devDependencies": {
+    "http-server": "^0.12.3"
+  },
+  "keywords": [
+    "phaser",
+    "multiplayer",
+    "fishing",
+    "playroom"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

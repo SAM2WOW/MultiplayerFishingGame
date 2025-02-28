@@ -1,0 +1,120 @@
+<head>
+  <style>
+    body{
+      background-color: #000;
+      margin: 0;
+    }
+    canvas{
+      zoom: 0.5;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <script src="https://unpkg.com/nipplejs@0.10.1/dist/nipplejs.js"></script>
+  <script src="https://unpkg.com/phaser@3.60.0/dist/phaser.min.js"></script>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/playroomkit/multiplayer.umd.js"></script>
+  <script type="module">
+    window._USETEMPSTORAGE = true;
+    const { onPlayerJoin, insertCoin, isHost, myPlayer, isStreamScreen } = Playroom;
+
+    class Main extends Phaser.Scene {
+      controls = {};
+      players = []; 
+
+      create() {
+        // 1. Handle players joining and quitting.
+        onPlayerJoin(player => this.addPlayer(player));
+
+        this.add.text(80*2, 150*2, 'Scan the QR Code\n To Fish', { fontSize: '30px' });
+
+        // 2. Pass player input to Playroom.
+        const joystick = nipplejs.create();
+        joystick.on("plain", (e, data) => {
+          myPlayer().setState("dir", data.direction);
+        });
+        joystick.on("end", () => {
+          myPlayer().setState("dir", undefined);
+        });
+      }
+
+      if (isStreamScreen()) {
+        // Show the Stream screen
+      } else {
+        // Show the Controller screen
+      }
+      
+      addPlayer(playerState) {
+        const sprite = this.add.rectangle(
+          Phaser.Math.Between(100, 500), 200, 100, 100, playerState.getProfile().color.hex);
+          // sprite.setStrokeStyle(4, playerState.getProfile().color.hex)
+        this.physics.add.existing(sprite, false);
+        sprite.body.setCollideWorldBounds(true);
+        this.players.push({
+          sprite,
+          state: playerState
+        });
+        playerState.onQuit(() => {
+          sprite.destroy();
+          this.players = this.players.filter(p => p.state !== playerState);
+        });
+      }
+
+      update() {
+        // 3. Pass your game state to Playroom.
+        if (isHost()){
+          for (const player of this.players) {
+            const controls = player.state.getState("dir") || {};
+            if (controls.x == "left") {
+              player.sprite.body.setVelocityX(-260);
+            }
+            else if (controls.x == "right") {
+              player.sprite.body.setVelocityX(260);
+            }
+            else{
+              player.sprite.body.setVelocityX(0);
+            }
+        
+            if (controls.y == "up" && player.sprite.body.onFloor()) {
+              player.sprite.body.setVelocityY(-730);
+            }
+            player.state.setState("pos", {
+              x: player.sprite.body.x,
+              y: player.sprite.body.y,
+            });
+          }
+        }
+        else{
+          for (const player of this.players) {
+            const pos = player.state.getState("pos");
+            if (pos){
+              player.sprite.body.x = pos.x;
+              player.sprite.body.y = pos.y;
+            }
+          }
+        }
+      }
+    }
+
+    const config = {
+      type: Phaser.AUTO,
+      width: 300 * 2,
+      height: 640 * 2,
+      parent: 'root',
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: { y: 1600 }
+        }
+      },
+      scene: Main
+    };
+
+    // 4. Insert Coin! Start the game.
+    insertCoin().then(() => {
+      const game = new Phaser.Game(config);
+    });
+  </script>
+</body>
