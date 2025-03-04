@@ -181,6 +181,7 @@
             document.getElementById('container').style.display = 'none';
             const game = new Phaser.Game(config);
             game.scene.start('StreamScene');
+        });
     });
     
     document.getElementById('player-btn').addEventListener('click', function() {
@@ -190,7 +191,7 @@
             game.scene.start('ControllerScene');
         });
     });
-    
+
     // document.getElementById('container').style.display = 'none';
     // const game = new Phaser.Game(config);
     // game.scene.start('StreamScene');
