@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/phaser@3.60.0/dist/phaser.min.js"></script>
     <script src="https://unpkg.com/playroomkit/multiplayer.full.umd.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <title>Multiplayer Fishing Game</title>
     <style>
         body {
@@ -26,6 +27,11 @@
             z-index: 1;
         }
         
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+        }
+
         h1 {
             font-size: 3rem;
             margin-bottom: 2rem;
@@ -101,6 +107,12 @@
           <button id="player-btn">Start as Player</button>
       </div>
   </div>
+
+  <div class="qr-container" id="qr-container">
+      <div id="qr-reader" style="width:300px"></div>
+      <div id="qr-reader-results"></div>
+  </div>
+
   <script>
     // Create bubbles
     function createBubbles() {
@@ -154,18 +166,17 @@
   <script type="module">
     import StreamScene from './StreamScene.js';
     import ControllerScene from './ControllerScene.js';
-    import Fish from './Fish.js';
 
     window._USETEMPSTORAGE = true;
     const { onPlayerJoin, insertCoin, isHost, myPlayer, isStreamScreen } = Playroom;
 
     // Game configuration
-    const config = {
+    const stream_config = {
         type: Phaser.AUTO,
         width: 1280,
         height: 720,
         backgroundColor: '#1c6ba0',
-        scene: [StreamScene, ControllerScene],
+        scene: [StreamScene],
         physics: {
             default: 'arcade',
             arcade: {
@@ -175,11 +186,28 @@
         }
     };
 
+    const controller_config = {
+        type: Phaser.AUTO,
+        width: 300,
+        height: 300,
+        backgroundColor: '#1c6ba0',
+        scene: [ControllerScene],
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 0 },
+                debug: false
+            }
+        }
+    };
+
+    document.getElementById('qr-container').style.display = "none";
+
     // Add button click handlers
     document.getElementById('host-btn').addEventListener('click', function() {
         insertCoin({ streamMode: true }).then(() => {
             document.getElementById('container').style.display = 'none';
-            const game = new Phaser.Game(config);
+            const game = new Phaser.Game(stream_config);
             game.scene.start('StreamScene');
         });
     });
@@ -187,13 +215,9 @@
     document.getElementById('player-btn').addEventListener('click', function() {
         insertCoin({ streamMode: false }).then(() => {
             document.getElementById('container').style.display = 'none';
-            const game = new Phaser.Game(config);
-            game.scene.start('ControllerScene');
+            document.getElementById('qr-container').style.display = 'inherit';
+            const game = new Phaser.Game(controller_config);
         });
     });
-
-    // document.getElementById('container').style.display = 'none';
-    // const game = new Phaser.Game(config);
-    // game.scene.start('StreamScene');
   </script>
 </body>
