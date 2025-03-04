@@ -93,7 +93,7 @@
 <body>
   <div class="bubbles" id="bubbles"></div>
     
-  <div class="container">
+  <div class="container" id="container">
       <h1>Multiplayer Fishing Game</h1>
       
       <div class="buttons">
@@ -101,7 +101,56 @@
           <button id="player-btn">Start as Player</button>
       </div>
   </div>
+  <script>
+    // Create bubbles
+    function createBubbles() {
+      const bubblesContainer = document.getElementById('bubbles');
+      
+      for (let i = 0; i < 40; i++) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          
+          // Random bubble properties
+          const size = 2 + Math.random() * 12;
+          const left = Math.random() * 100;
+          const animationDuration = 5 + Math.random() * 15;
+          
+          bubble.style.width = `${size}px`;
+          bubble.style.height = `${size}px`;
+          bubble.style.left = `${left}%`;
+          bubble.style.animationDuration = `${animationDuration}s`;
+          bubble.style.animationDelay = `${Math.random() * animationDuration}s`;
+          
+          bubblesContainer.appendChild(bubble);
+      }
+  }
 
+  // Animation for bubbles
+  document.head.insertAdjacentHTML('beforeend', `
+      <style>
+          @keyframes float {
+              0% {
+                  transform: translateY(0) scale(1);
+                  opacity: 0;
+              }
+              10% {
+                  opacity: 0.8;
+              }
+              100% {
+                  transform: translateY(-100vh) scale(1.5);
+                  opacity: 0;
+              }
+          }
+      </style>
+  `);
+
+  // Initialize decorative elements
+  window.addEventListener('load', () => {
+      createBubbles();
+  });
+
+  </script>
+  
   <script type="module">
     import StreamScene from './StreamScene.js';
     import ControllerScene from './ControllerScene.js';
@@ -127,21 +176,22 @@
     };
 
     // Add button click handlers
-    document.getElementById('host-btn').addEventListener('click', function() {
-        alert('Starting game as Host...');
-        insertCoin({ streamMode: true }).then(() => {
-            const game = new Phaser.Game(config);
-            game.scene.start('StreamScene');
-    });
+    // document.getElementById('host-btn').addEventListener('click', function() {
+    //     // alert('Starting game as Host...');
+    //     insertCoin({ streamMode: true }).then(() => {
+    //         const game = new Phaser.Game(config);
+    //         game.scene.start('StreamScene');
+    // });
     
-    document.getElementById('player-btn').addEventListener('click', function() {
-        alert('Starting game as Player...');
-        insertCoin({ streamMode: false }).then(() => {
-            const game = new Phaser.Game(config);
-            game.scene.start('ControllerScene');
-        });
-    });
-      
-    });
+    // document.getElementById('player-btn').addEventListener('click', function() {
+    //     // alert('Starting game as Player...');
+    //     insertCoin({ streamMode: false }).then(() => {
+    //         const game = new Phaser.Game(config);
+    //         game.scene.start('ControllerScene');
+    //     });
+    // });
+    document.getElementById('container').style.display = 'none';
+    const game = new Phaser.Game(config);
+    game.scene.start('StreamScene');
   </script>
 </body>
