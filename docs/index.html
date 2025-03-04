@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="https://unpkg.com/phaser@3.87.0/dist/phaser.min.js"></script>
     <script src="https://unpkg.com/playroomkit/multiplayer.full.umd.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <title>Multiplayer Fishing Game</title>
@@ -111,6 +111,7 @@
   <div class="qr-container" id="qr-container">
       <div id="qr-reader" style="width:300px"></div>
       <div id="qr-reader-results"></div>
+      <div id="phaser-controller"></div>
   </div>
 
   <script>
@@ -191,6 +192,7 @@
         width: 300,
         height: 300,
         backgroundColor: '#1c6ba0',
+        parent: 'phaser-controller',
         scene: [ControllerScene],
         physics: {
             default: 'arcade',

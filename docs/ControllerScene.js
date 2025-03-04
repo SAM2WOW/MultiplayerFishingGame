@@ -85,7 +85,11 @@ class ControllerScene extends Phaser.Scene {
                             if (this.shakeProgress >= this.shakeMeterMax) {
                                 // Shake meter is full, catch the fish
                                 // Playroom.sendRpc('catchFish', { playerId: Playroom.myPlayer().id });
-                                alert('Fish caught!');
+                                // alert('Fish caught!');
+
+                                const message = this.add.text(100, 100, 'Fish caught!', { fontSize: '32px', fill: '#fff' });
+                                message.setOrigin(0.5);
+                                
                                 resetFishProgress();
                             }
                         }
