@@ -150,7 +150,7 @@
   });
 
   </script>
-  
+
   <script type="module">
     import StreamScene from './StreamScene.js';
     import ControllerScene from './ControllerScene.js';
@@ -176,22 +176,23 @@
     };
 
     // Add button click handlers
-    // document.getElementById('host-btn').addEventListener('click', function() {
-    //     // alert('Starting game as Host...');
-    //     insertCoin({ streamMode: true }).then(() => {
-    //         const game = new Phaser.Game(config);
-    //         game.scene.start('StreamScene');
-    // });
+    document.getElementById('host-btn').addEventListener('click', function() {
+        insertCoin({ streamMode: true }).then(() => {
+            document.getElementById('container').style.display = 'none';
+            const game = new Phaser.Game(config);
+            game.scene.start('StreamScene');
+    });
     
-    // document.getElementById('player-btn').addEventListener('click', function() {
-    //     // alert('Starting game as Player...');
-    //     insertCoin({ streamMode: false }).then(() => {
-    //         const game = new Phaser.Game(config);
-    //         game.scene.start('ControllerScene');
-    //     });
-    // });
-    document.getElementById('container').style.display = 'none';
-    const game = new Phaser.Game(config);
-    game.scene.start('StreamScene');
+    document.getElementById('player-btn').addEventListener('click', function() {
+        insertCoin({ streamMode: false }).then(() => {
+            document.getElementById('container').style.display = 'none';
+            const game = new Phaser.Game(config);
+            game.scene.start('ControllerScene');
+        });
+    });
+    
+    // document.getElementById('container').style.display = 'none';
+    // const game = new Phaser.Game(config);
+    // game.scene.start('StreamScene');
   </script>
 </body>
