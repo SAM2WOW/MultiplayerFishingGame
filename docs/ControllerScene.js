@@ -3,6 +3,9 @@ class ControllerScene extends Phaser.Scene {
         super({ key: 'ControllerScene' });
 
         this.fishDetected = false;
+        this.shakeProgress = 0;
+        this.shakeThreshold = 15;
+        this.shakeMeterMax = 100; // Maximum value for the shake meter
     }
 
     preload() {
@@ -36,11 +39,24 @@ class ControllerScene extends Phaser.Scene {
 
             this.time.delayedCall(3000, () => {
                 message.destroy();
+                hideFishFoundMessage();
             });
+
+            // Create the shake meter
+            this.shakeMeter = this.add.graphics();
+            this.shakeMeter.fillStyle(0x00ff00, 1);
+            this.shakeMeter.fillRect(50, 200, 0, 20); // Initial width is 0
         };
 
+        const resetFishProgress = () => {
+            if (this.fishDetected) {
+                this.fishDetected = false;
+                this.shakeProgress = 0;
+                this.shakeMeter.clear();
+            }
+        }
+
         // Detect shake event
-        let shakeThreshold = 15;
         let lastUpdate = 0;
         let x = 0, y = 0, z = 0, lastX = 0, lastY = 0, lastZ = 0;
 
@@ -58,12 +74,20 @@ class ControllerScene extends Phaser.Scene {
 
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
 
-                    if (speed > shakeThreshold) {
-                        // Shake detected, send RPC event
-                        // Playroom.sendRpc('catchFish', { playerId: Playroom.myPlayer().id });
-                        // for now just print to console
+                    if (speed > this.shakeThreshold) {
+                        // Shake detected, increase shake progress
                         if (this.fishDetected) {
-                            alert('Fish caught!');
+                            this.shakeProgress += 10; // Increase progress by 10 for each shake
+                            this.shakeMeter.clear();
+                            this.shakeMeter.fillStyle(0x00ff00, 1);
+                            this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
+
+                            if (this.shakeProgress >= this.shakeMeterMax) {
+                                // Shake meter is full, catch the fish
+                                // Playroom.sendRpc('catchFish', { playerId: Playroom.myPlayer().id });
+                                alert('Fish caught!');
+                                resetFishProgress();
+                            }
                         }
                     }
 
