@@ -113,14 +113,22 @@ class ControllerScene extends Phaser.Scene {
                     z = acceleration.z;
 
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+                    let maxSpeed = 25;
+
+                    // visualize how fast player shakes by drawing a reatangle bar on the top of canvas
+                    // canvas is 300x300
+                    // speed is 0-maxSpeed
+                    this.shakeMeter.clear();
+                    this.shakeMeter.fillStyle(0x00ff00, 1);
+                    this.shakeMeter.fillRect(50, 200, speed, 20);
 
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += speed / 1000; // Increase progress based on speed
-                            this.shakeMeter.clear();
-                            this.shakeMeter.fillStyle(0x00ff00, 1);
-                            this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
+                            this.shakeProgress += speed / maxSpeed; // Increase progress based on speed
+                            // this.shakeMeter.clear();
+                            // this.shakeMeter.fillStyle(0x00ff00, 1);
+                            // this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
 
                             if (this.shakeProgress >= this.shakeMeterMax) {
                                 // Shake meter is full, catch the fish
@@ -145,11 +153,14 @@ class ControllerScene extends Phaser.Scene {
 
     update() {
         // draw a red circle where player mouse is
-        let pointer = this.input.activePointer;
-        let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
-        this.time.delayedCall(500, () => {
-            circle.destroy();
-        });
+        // let pointer = this.input.activePointer;
+        // let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
+        // this.time.delayedCall(500, () => {
+        //     circle.destroy();
+        // });
+
+        
+
     }
 }
 
