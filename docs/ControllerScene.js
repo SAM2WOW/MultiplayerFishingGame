@@ -8,6 +8,8 @@ class ControllerScene extends Phaser.Scene {
         this.shakeMeterMax = 100; // Maximum value for the shake meter
 
         this.currentFish = null;
+
+        // TODO: Fix issue when fish already caught when player catch RPC
     }
 
     create(data) {
