@@ -103,10 +103,10 @@ class Fish {
             // caught fish
             this.state = 'caught';
 
-            // make fish disappear for 3 seconds then reappear
+            // make fish disappear for 5 seconds then reappear
             this.sprite.x = -100;
             this.sprite.y = -100;
-            this.scene.time.delayedCall(3000, () => {
+            this.scene.time.delayedCall(5000, () => {
                 this.state = 'idle';
                 this.sprite.x = Math.random() * this.scene.sys.game.config.width;
                 this.sprite.y = Math.random() * this.scene.sys.game.config.height;

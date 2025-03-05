@@ -121,7 +121,7 @@ class ControllerScene extends Phaser.Scene {
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += 2; // Increase progress based on speed
+                            this.shakeProgress += 20; // Increase progress based on speed
                             this.shakeMeter.clear();
                             this.shakeMeter.fillStyle(0x00ff00, 1);
                             this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
