@@ -115,25 +115,22 @@ class ControllerScene extends Phaser.Scene {
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
 
                     if (speed > this.shakeThreshold) {
-                        // Shake detected, increase shake progress
+                        // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += 2; // Increase progress by 10 for each shake
+                            this.shakeProgress += speed / 1000; // Increase progress based on speed
                             this.shakeMeter.clear();
                             this.shakeMeter.fillStyle(0x00ff00, 1);
                             this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
 
                             if (this.shakeProgress >= this.shakeMeterMax) {
                                 // Shake meter is full, catch the fish
-                                // Playroom.sendRpc('catchFish', { playerId: Playroom.myPlayer().id });
-                                // alert('Fish caught!');
-                                
                                 const message = this.add.text(100, 100, 'Fish caught!', { fontSize: '32px', fill: '#fff' });
                                 message.setOrigin(0.5);
                                 
-                                resetFishProgress();
+                                this.resetFishProgress();
 
                                 // Trigger the RPC on the host only
-                                RPC.call('endCatching', {fishID: this.currentFish, success: true}, RPC.Mode.HOST);
+                                RPC.call('endCatching', { fishID: this.currentFish, success: true }, RPC.Mode.HOST);
                             }
                         }
                     }
