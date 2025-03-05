@@ -27,9 +27,13 @@ class ControllerScene extends Phaser.Scene {
                 .Mode.HOST);
             
             console.log('Test RPC fired');
-            
-            const message = this.add.text(100, 100, 'Test RPC fired!', { fontSize: '32px', fill: '#fff' });
-            message.setOrigin(0.5);
+
+            // draw a circle where player touched
+            let pointer = this.input.activePointer;
+            let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
+            this.time.delayedCall(500, () => {
+                circle.destroy();
+            });
             
         });
 
