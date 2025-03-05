@@ -1,17 +1,18 @@
 class Fish {
-    constructor(scene, x, y, type) {
+    constructor(scene, x, y, id = 0) {
         this.scene = scene;
-        this.type = type;
-        this.speed = 0.5 + Math.random() * 1.5;
+        this.speed = 100.0 + Math.random() * 40;
         
-        // Different fish colors/types
-        let colors = ['red', 'blue', 'yellow', 'green', 'orange'];
-        let color = colors[type % colors.length];
-        
+        // fish ID (0-8)
+        this.id = id;
+
+        // fish rarity
+        let rarities = ['common', 'rare', 'legendary'];
+        let rarity = rarities[0];
+
         // Create the fish sprite
-        this.sprite = scene.add.sprite(x, y, 'fish');
-        this.sprite.setTint(this.getColorValue(color));
-        this.sprite.setScale(0.5 + (type % 3) * 0.2);
+        this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
+        // this.sprite.setScale(0.5 + (type % 3) * 0.2);
         
         // Set random direction
         this.setRandomDirection();
@@ -21,26 +22,24 @@ class Fish {
         
         // Add to update list
         scene.fishList.push(this);
+
+        // check state if the fish is being catched or caught
+        let states = ['idle', 'catched', 'caught'];
+        let state = states[0];
     }
-    
-    getColorValue(colorName) {
-        const colors = {
-            red: 0xff6666,
-            blue: 0x6688ff,
-            yellow: 0xffff66,
-            green: 0x66ff66,
-            orange: 0xffaa66
-        };
-        return colors[colorName] || 0xffffff;
-    }
-    
-    update() {
+
+    update(time, delta) {
+        if (this.state != 'idle') {
+            return;
+        }
+
         // Move the fish
-        this.sprite.x += Math.cos(this.sprite.rotation) * this.speed;
-        this.sprite.y += Math.sin(this.sprite.rotation) * this.speed;
+        const deltaTime = delta / 1000; // Convert delta to seconds
+        this.sprite.x += Math.cos(this.sprite.rotation) * this.speed * deltaTime;
+        this.sprite.y += Math.sin(this.sprite.rotation) * this.speed * deltaTime;
         
         // Add some random rotation change for natural movement
-        this.sprite.rotation += this.rotationSpeed;
+        this.sprite.rotation += this.rotationSpeed * deltaTime;
         
         // Check if fish is out of bounds
         const padding = 50;
@@ -77,6 +76,49 @@ class Fish {
         
         // Flip the sprite depending on direction
         this.sprite.flipY = Math.cos(this.sprite.rotation) < 0;
+    }
+
+    startCatchingFish() {
+        if (this.state != 'idle') {
+            return;
+        }
+
+        // start catching fish
+        this.state = 'catched';
+
+        // change the tint to red
+        this.sprite.setTint(0xff0000);
+
+    }
+
+    endCatchingFish(success) {
+        if (this.state != 'catched') {
+            return;
+        }
+        
+        // change tint back to normal
+        this.sprite.clearTint();
+
+        if (success) {
+            // caught fish
+            this.state = 'caught';
+
+            // make fish disappear for 3 seconds then reappear
+            this.sprite.x = -100;
+            this.sprite.y = -100;
+            this.scene.time.delayedCall(3000, () => {
+                this.state = 'idle';
+                this.sprite.x = Math.random() * this.scene.sys.game.config.width;
+                this.sprite.y = Math.random() * this.scene.sys.game.config.height;
+                this.setRandomDirection();
+            });
+
+        }
+        else
+        {
+            // failed to catch fish
+            this.state = 'idle';
+        }
     }
 }
 

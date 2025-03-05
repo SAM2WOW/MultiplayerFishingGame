@@ -4,14 +4,24 @@ class StreamScene extends Phaser.Scene {
     constructor() {
         super({ key: 'StreamScene' });
         this.fishList = [];
+        this.amountOfFish = 9;
+
+        this.players = [];
     }
 
     preload() {
         // Load assets
         this.load.image('background', '/sprites/pond.webp');
+        // this.load.image('lily', '/api/placeholder/64/64');
+        // this.load.image('ripple', '/api/placeholder/128/128');
+
+        // Load assets
         this.load.image('fish', '/sprites/fish.webp');
-        this.load.image('lily', '/api/placeholder/64/64');
-        this.load.image('ripple', '/api/placeholder/128/128');
+
+        // load all the qr codes
+        for (let i = 0; i < this.amountOfFish; i++) {
+            this.load.image(`fish_${i}`, `/sprites/fish/fish_${i}.png`);
+        }
     }
     
     create() {
@@ -64,7 +74,7 @@ class StreamScene extends Phaser.Scene {
         // }
         
         // Add fish
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.amountOfFish; i++) {
             const x = Math.random() * width;
             const y = Math.random() * height;
             new Fish(this, x, y, i);
@@ -89,11 +99,22 @@ class StreamScene extends Phaser.Scene {
         //         repeatDelay: Math.random() * 2000
         //     });
         // }
+
+        // handle fish catching
+        RPC.register('startCatching', (data, caller) => {
+            console.log(`Player ${caller.id} start catch fish #${data.fishID}`);
+            // players[data.victimId].setState("dead", true);
+        });
+
+        RPC.register('endCatching', (data, caller) => {
+            console.log(`Player ${caller.id} end catch fish #${data.fishID}: ${data.success ? 'caught' : 'missed'}`);
+            // players[data.victimId].setState("dead", false);
+        });
     }
     
-    update() {
+    update(time, delta) {
         // Update all fish
-        this.fishList.forEach(fish => fish.update());
+        this.fishList.forEach(fish => fish.update(time, delta));
     }
 }
 

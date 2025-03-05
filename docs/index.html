@@ -169,7 +169,7 @@
     import ControllerScene from './ControllerScene.js';
 
     window._USETEMPSTORAGE = true;
-    const { onPlayerJoin, insertCoin, isHost, myPlayer, isStreamScreen } = Playroom;
+    const { onPlayerJoin, insertCoin, isHost, myPlayer, isStreamScreen, RPC } = Playroom;
 
     // Game configuration
     const stream_config = {
@@ -221,5 +221,10 @@
             const game = new Phaser.Game(controller_config);
         });
     });
+
+    // test stream
+    // document.getElementById('container').style.display = 'none';
+    // const game = new Phaser.Game(stream_config);
+    // game.scene.start('StreamScene');
   </script>
 </body>
