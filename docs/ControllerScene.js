@@ -10,10 +10,6 @@ class ControllerScene extends Phaser.Scene {
         this.currentFish = null;
     }
 
-    preload() {
-        // Load assets for the QR code scanner
-    }
-
     create(data) {
         var resultContainer = document.getElementById('qr-reader-results');
         var lastResult, countResults = 0;
@@ -21,24 +17,30 @@ class ControllerScene extends Phaser.Scene {
         // Access RPC from the data object
         const { RPC } = data;
 
-        // fire a test RPC when player touch
-        this.input.on('pointerdown', () => {
-            RPC.call('testFishing', { fishID: 'test' }, RPC
-                .Mode.HOST);
-            
+        // delay fire test
+        this.time.delayedCall(3000, () => {
+            RPC.call('testFishing', { fishID: 'test' }, RPC.Mode.ALL);
             console.log('Test RPC fired');
-
-            // draw a circle where player touched
-            let pointer = this.input.activePointer;
-            let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
-            this.time.delayedCall(500, () => {
-                circle.destroy();
-            });
-            
         });
 
-        function onScanSuccess(decodedText, decodedResult) {
-            if (decodedText !== lastResult) {
+        // fire a test RPC when player touch
+        // this.input.on('pointerdown', () => {
+        //     RPC.call('testFishing', { fishID: 'test' }, RPC
+        //         .Mode.HOST);
+            
+        //     console.log('Test RPC fired');
+
+        //     // draw a circle where player touched
+        //     let pointer = this.input.activePointer;
+        //     let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
+        //     this.time.delayedCall(500, () => {
+        //         circle.destroy();
+        //     });
+            
+        // });
+
+        const onScanSuccess = (decodedText, decodedResult) => {
+            if (!this.fishDetected) {
                 ++countResults;
                 lastResult = decodedText;
                 // Handle on success condition with the decoded message.
@@ -52,17 +54,20 @@ class ControllerScene extends Phaser.Scene {
                     console.log('Fish ID:', fishID);
 
                     this.currentFish = fishID;
-                    startCatchingFish(this.currentFish);
+                    this.startCatchingFish();
+                } else {
+                    console.log('Invalid fish ID');
                 }
             }
-        }
+        };
 
         var html5QrcodeScanner = new Html5QrcodeScanner(
             "qr-reader", { fps: 10, qrbox: 250 });
         html5QrcodeScanner.render(onScanSuccess);
 
         // Function to show the "Fish Found" message
-        const startCatchingFish = (fishID) => {
+        this.startCatchingFish = () => {
+            console.log('Fish detected!');
             const message = this.add.text(100, 100, 'Shake to fish!', { fontSize: '32px', fill: '#fff' });
             message.setOrigin(0.5);
 
@@ -70,7 +75,7 @@ class ControllerScene extends Phaser.Scene {
 
             this.time.delayedCall(3000, () => {
                 message.destroy();
-                hideFishFoundMessage();
+                this.resetFishProgress();
             });
 
             // Create the shake meter
@@ -78,18 +83,18 @@ class ControllerScene extends Phaser.Scene {
             this.shakeMeter.fillStyle(0x00ff00, 1);
             this.shakeMeter.fillRect(50, 200, 0, 20); // Initial width is 0
 
-            RPC.call('startCatching', {fishID: fishID}, RPC.Mode.HOST);
+            RPC.call('startCatching', { fishID: this.currentFish }, RPC.Mode.ALL);
         };
 
-        const resetFishProgress = () => {
+        this.resetFishProgress = () => {
             if (this.fishDetected) {
                 this.fishDetected = false;
                 this.shakeProgress = 0;
                 this.shakeMeter.clear();
 
-                RPC.call('endCatching', {fishID: this.currentFish, success: false}, RPC.Mode.HOST);
+                RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
             }
-        }
+        };
 
         // Detect shake event
         let lastUpdate = 0;
@@ -142,7 +147,12 @@ class ControllerScene extends Phaser.Scene {
     }
 
     update() {
-        // Update logic for the QR code scanner
+        // draw a red circle where player mouse is
+        let pointer = this.input.activePointer;
+        let circle = this.add.circle(pointer.x, pointer.y, 10, 0xff0000);
+        this.time.delayedCall(500, () => {
+            circle.destroy();
+        });
     }
 }
 

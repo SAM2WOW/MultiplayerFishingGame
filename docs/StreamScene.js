@@ -107,16 +107,22 @@ class StreamScene extends Phaser.Scene {
         RPC.register('testFishing', (data, caller) => {
             console.log('Test RPC:', data);
         });
-        
+
         // handle fish catching
         RPC.register('startCatching', (data, caller) => {
             console.log(`Player ${caller.id} start catch fish #${data.fishID}`);
             // players[data.victimId].setState("dead", true);
+
+            // find the fish and call the start catching function inside fish class
+            // fish id is just the index of the fish
+            this.fishList[data.fishID].startCatchingFish();
         });
 
         RPC.register('endCatching', (data, caller) => {
             console.log(`Player ${caller.id} end catch fish #${data.fishID}: ${data.success ? 'caught' : 'missed'}`);
             // players[data.victimId].setState("dead", false);
+
+            this.fishList[data.fishID].endCatchingFish(data.success);
         });
     }
     

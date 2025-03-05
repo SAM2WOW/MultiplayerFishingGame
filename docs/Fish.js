@@ -14,7 +14,7 @@ class Fish {
         this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
         // this.sprite.setScale(0.5 + (type % 3) * 0.2);
         
-        // Set random direction
+        // functions
         this.setRandomDirection();
         
         // Random rotation adjustment
