@@ -25,6 +25,12 @@ class ControllerScene extends Phaser.Scene {
         this.input.on('pointerdown', () => {
             RPC.call('testFishing', { fishID: 'test' }, RPC
                 .Mode.HOST);
+            
+            console.log('Test RPC fired');
+            
+            const message = this.add.text(100, 100, 'Test RPC fired!', { fontSize: '32px', fill: '#fff' });
+            message.setOrigin(0.5);
+            
         });
 
         function onScanSuccess(decodedText, decodedResult) {
