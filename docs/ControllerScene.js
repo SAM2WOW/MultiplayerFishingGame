@@ -75,6 +75,7 @@ class ControllerScene extends Phaser.Scene {
 
             this.time.delayedCall(10000, () => {
                 message.destroy();
+                RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
                 this.resetFishProgress();
             });
 
@@ -95,8 +96,6 @@ class ControllerScene extends Phaser.Scene {
                 this.fishDetected = false;
                 this.shakeProgress = 0;
                 this.shakeMeter.clear();
-
-                RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
             }
         };
 
@@ -121,7 +120,7 @@ class ControllerScene extends Phaser.Scene {
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += 20; // Increase progress based on speed
+                            this.shakeProgress += 15; // Increase progress based on speed
                             this.shakeMeter.clear();
                             this.shakeMeter.fillStyle(0x00ff00, 1);
                             this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);

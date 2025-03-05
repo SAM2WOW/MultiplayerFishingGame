@@ -1,7 +1,7 @@
 class Fish {
     constructor(scene, x, y, id = 0) {
         this.scene = scene;
-        this.speed = 100.0 + Math.random() * 40;
+        this.speed = 80.0 + Math.random() * 60.0;
         
         // fish ID (0-8)
         this.id = id;
@@ -96,18 +96,20 @@ class Fish {
             return;
         }
         
-        // change tint back to normal
-        this.sprite.clearTint();
-
         if (success) {
             // caught fish
             this.state = 'caught';
+            
+            this.sprite.setTint(0x00ff00);
 
             // make fish disappear for 5 seconds then reappear
             this.sprite.x = -100;
             this.sprite.y = -100;
             this.scene.time.delayedCall(5000, () => {
                 this.state = 'idle';
+
+                this.sprite.clearTint();
+
                 this.sprite.x = Math.random() * this.scene.sys.game.config.width;
                 this.sprite.y = Math.random() * this.scene.sys.game.config.height;
                 this.setRandomDirection();
