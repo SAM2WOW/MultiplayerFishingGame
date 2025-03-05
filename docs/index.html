@@ -210,7 +210,7 @@
         insertCoin({ streamMode: true }).then(() => {
             document.getElementById('container').style.display = 'none';
             const game = new Phaser.Game(stream_config);
-            game.scene.start('StreamScene');
+            game.scene.start('StreamScene', { RPC });
         });
     });
     
@@ -219,12 +219,14 @@
             document.getElementById('container').style.display = 'none';
             document.getElementById('qr-container').style.display = 'inherit';
             const game = new Phaser.Game(controller_config);
+            game.scene.start('ControllerScene', { RPC });
         });
     });
 
     // test stream
     // document.getElementById('container').style.display = 'none';
     // const game = new Phaser.Game(stream_config);
-    // game.scene.start('StreamScene');
+    // game.scene.start('StreamScene', { RPC });
+
   </script>
 </body>

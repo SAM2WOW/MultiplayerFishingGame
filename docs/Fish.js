@@ -7,8 +7,8 @@ class Fish {
         this.id = id;
 
         // fish rarity
-        let rarities = ['common', 'rare', 'legendary'];
-        let rarity = rarities[0];
+        this.rarities = ['common', 'rare', 'legendary'];
+        this.rarity = this.rarities[0];
 
         // Create the fish sprite
         this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
@@ -24,8 +24,8 @@ class Fish {
         scene.fishList.push(this);
 
         // check state if the fish is being catched or caught
-        let states = ['idle', 'catched', 'caught'];
-        let state = states[0];
+        this.states = ['idle', 'catched', 'caught'];
+        this.state = this.states[0];
     }
 
     update(time, delta) {

@@ -24,7 +24,7 @@ class StreamScene extends Phaser.Scene {
         }
     }
     
-    create() {
+    create(data) {
         const width = this.sys.game.config.width;
         const height = this.sys.game.config.height;
         
@@ -100,6 +100,9 @@ class StreamScene extends Phaser.Scene {
         //     });
         // }
 
+        // Access RPC from the data object
+        const { RPC } = data;
+        
         // handle fish catching
         RPC.register('startCatching', (data, caller) => {
             console.log(`Player ${caller.id} start catch fish #${data.fishID}`);

@@ -1,5 +1,3 @@
-import Fish from "./Fish";
-
 class ControllerScene extends Phaser.Scene {
     constructor() {
         super({ key: 'ControllerScene' });
@@ -16,10 +14,13 @@ class ControllerScene extends Phaser.Scene {
         // Load assets for the QR code scanner
     }
 
-    create() {
+    create(data) {
         var resultContainer = document.getElementById('qr-reader-results');
         var lastResult, countResults = 0;
 
+        // Access RPC from the data object
+        const { RPC } = data;
+        
         function onScanSuccess(decodedText, decodedResult) {
             if (decodedText !== lastResult) {
                 ++countResults;
