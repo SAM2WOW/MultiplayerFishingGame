@@ -20,7 +20,13 @@ class ControllerScene extends Phaser.Scene {
 
         // Access RPC from the data object
         const { RPC } = data;
-        
+
+        // fire a test RPC when player touch
+        this.input.on('pointerdown', () => {
+            RPC.call('testFishing', { fishID: 'test' }, RPC
+                .Mode.HOST);
+        });
+
         function onScanSuccess(decodedText, decodedResult) {
             if (decodedText !== lastResult) {
                 ++countResults;

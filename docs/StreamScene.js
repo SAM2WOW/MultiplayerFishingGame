@@ -102,6 +102,11 @@ class StreamScene extends Phaser.Scene {
 
         // Access RPC from the data object
         const { RPC } = data;
+
+        // add test case
+        RPC.register('testFishing', (data, caller) => {
+            console.log('Test RPC:', data);
+        });
         
         // handle fish catching
         RPC.register('startCatching', (data, caller) => {
