@@ -4,7 +4,7 @@ class ControllerScene extends Phaser.Scene {
 
         this.fishDetected = false;
         this.shakeProgress = 0;
-        this.shakeThreshold = 30;
+        this.shakeThreshold = 500;
         this.shakeMeterMax = 100; // Maximum value for the shake meter
 
         this.currentFish = null;
@@ -73,7 +73,7 @@ class ControllerScene extends Phaser.Scene {
 
             this.fishDetected = true;
 
-            this.time.delayedCall(3000, () => {
+            this.time.delayedCall(10000, () => {
                 message.destroy();
                 this.resetFishProgress();
             });
@@ -121,7 +121,7 @@ class ControllerScene extends Phaser.Scene {
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += 2+0; // Increase progress based on speed
+                            this.shakeProgress += 2; // Increase progress based on speed
                             this.shakeMeter.clear();
                             this.shakeMeter.fillStyle(0x00ff00, 1);
                             this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
