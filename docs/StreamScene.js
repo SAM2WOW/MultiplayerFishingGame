@@ -11,16 +11,16 @@ class StreamScene extends Phaser.Scene {
 
     preload() {
         // Load assets
-        this.load.image('background', '/sprites/pond.webp');
+        this.load.image('background', '/MultiplayerFishingGame/sprites/pond.webp');
         // this.load.image('lily', '/api/placeholder/64/64');
         // this.load.image('ripple', '/api/placeholder/128/128');
 
         // Load assets
-        this.load.image('fish', '/sprites/fish.webp');
+        this.load.image('fish', '/MultiplayerFishingGame/sprites/fish.webp');
 
         // load all the qr codes
         for (let i = 0; i < this.amountOfFish; i++) {
-            this.load.image(`fish_${i}`, `/sprites/fish/fish_${i}.png`);
+            this.load.image(`fish_${i}`, `/MultiplayerFishingGame/sprites/fish/fish_${i}.png`);
         }
     }
     
