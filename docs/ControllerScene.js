@@ -83,6 +83,10 @@ class ControllerScene extends Phaser.Scene {
             this.shakeMeter.fillStyle(0x00ff00, 1);
             this.shakeMeter.fillRect(50, 200, 0, 20); // Initial width is 0
 
+            // make it outlined
+            this.shakeMeter.lineStyle(2, 0x000000, 1);
+            this.shakeMeter.strokeRect(50, 200, this.shakeMeterMax, 20);
+
             RPC.call('startCatching', { fishID: this.currentFish }, RPC.Mode.ALL);
         };
 
@@ -113,22 +117,17 @@ class ControllerScene extends Phaser.Scene {
                     z = acceleration.z;
 
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
-                    let maxSpeed = 5;
-
-                    // visualize how fast player shakes by drawing a reatangle bar on the top of canvas
-                    // canvas is 300x300
-                    // speed is 0-maxSpeed
-                    this.shakeMeter.clear();
-                    this.shakeMeter.fillStyle(0x00ff00, 1);
-                    this.shakeMeter.fillRect(50, 200, speed, 20);
 
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
-                            this.shakeProgress += speed / maxSpeed; // Increase progress based on speed
-                            // this.shakeMeter.clear();
-                            // this.shakeMeter.fillStyle(0x00ff00, 1);
-                            // this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
+                            this.shakeProgress += 20; // Increase progress based on speed
+                            this.shakeMeter.clear();
+                            this.shakeMeter.fillStyle(0x00ff00, 1);
+                            this.shakeMeter.fillRect(50, 200, this.shakeProgress, 20);
+
+                            this.shakeMeter.lineStyle(2, 0x000000, 1);
+                            this.shakeMeter.strokeRect(50, 200, this.shakeMeterMax, 20);
 
                             if (this.shakeProgress >= this.shakeMeterMax) {
                                 // Shake meter is full, catch the fish
