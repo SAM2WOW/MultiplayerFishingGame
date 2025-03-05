@@ -113,7 +113,7 @@ class ControllerScene extends Phaser.Scene {
                     z = acceleration.z;
 
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
-                    let maxSpeed = 25;
+                    let maxSpeed = 5;
 
                     // visualize how fast player shakes by drawing a reatangle bar on the top of canvas
                     // canvas is 300x300
