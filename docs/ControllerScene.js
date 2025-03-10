@@ -70,7 +70,7 @@ class ControllerScene extends Phaser.Scene {
         // Function to show the "Fish Found" message
         this.startCatchingFish = () => {
             console.log('Fish detected!');
-            const message = this.add.text(100, 100, 'Shake to fish!', { fontSize: '32px', fill: '#fff' });
+            const message = this.add.text(150, 100, 'Shake to fish!', { fontSize: '24px', fill: '#fff' });
             message.setOrigin(0.5);
 
             this.fishDetected = true;
