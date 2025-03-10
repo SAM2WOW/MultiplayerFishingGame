@@ -20,7 +20,7 @@ class StreamScene extends Phaser.Scene {
 
         // load all the qr codes
         for (let i = 0; i < this.amountOfFish; i++) {
-            this.load.image(`fish_${i}`, `/MultiplayerFishingGame/sprites/fish/fish_${i}.png`);
+            this.load.image(`fish_${i}`, `/MultiplayerFishingGame/sprites/fish_illus/fish_${i}.png`);
         }
     }
     
