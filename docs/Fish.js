@@ -1,14 +1,34 @@
 class Fish {
     constructor(scene, x, y, id = 0) {
         this.scene = scene;
-        this.speed = 80.0 + Math.random() * 60.0;
         
         // fish ID (0-8)
         this.id = id;
 
         // fish rarity
         this.rarities = ['common', 'rare', 'legendary'];
-        this.rarity = this.rarities[0];
+
+        // fish 123 is common, 456 is rare, 789 is legendary
+        if (this.id < 3) {
+            this.rarity = this.rarities[0];
+        }
+        else if (this.id < 6) { 
+            this.rarity = this.rarities[1];
+        }
+        else {
+            this.rarity = this.rarities[2];
+        }
+
+        // speed is based on rarity
+        if (this.rarity == 'common') {
+            this.speed = 80.0;
+        }
+        else if (this.rarity == 'rare') {
+            this.speed = 200.0;
+        }
+        else {
+            this.speed = 400.0;
+        }
 
         // Create the fish sprite
         this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
@@ -18,8 +38,20 @@ class Fish {
         this.setRandomDirection();
         
         // Random rotation adjustment
-        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
-        
+        // this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        if (this.rarity == 'common') {
+            this.rotationSpeed = 0.5;
+        }
+        else if (this.rarity == 'rare') {
+            this.rotationSpeed = 1.0;
+        }
+        else {
+            this.rotationSpeed = 2.0;
+        }
+
+        this.targetRotation = 0;
+        this.rotationPeriod = Math.random() * 3;
+
         // Add to update list
         scene.fishList.push(this);
 
@@ -35,27 +67,38 @@ class Fish {
 
         // Move the fish
         const deltaTime = delta / 1000; // Convert delta to seconds
-        this.sprite.x += Math.cos(this.sprite.rotation) * this.speed * deltaTime;
-        this.sprite.y += Math.sin(this.sprite.rotation) * this.speed * deltaTime;
+        this.sprite.x -= Math.cos(this.sprite.rotation) * this.speed * deltaTime;
+        this.sprite.y -= Math.sin(this.sprite.rotation) * this.speed * deltaTime;
         
         // Add some random rotation change for natural movement
-        this.sprite.rotation += this.rotationSpeed * deltaTime;
+        // interpolate it
+        this.sprite.rotation = Phaser.Math.Angle.RotateTo(this.sprite.rotation, this.targetRotation, deltaTime * this.rotationSpeed);
+        // this.sprite.rotation += this.rotationSpeed * deltaTime;
         
+        this.rotationPeriod -= deltaTime;
+        if (this.rotationPeriod <= 0) {
+            this.rotationPeriod = Math.random() * 3;
+            this.targetRotation = Math.random() * Math.PI * 2;
+        }
+
         // Check if fish is out of bounds
         const padding = 50;
         const width = this.scene.sys.game.config.width;
         const height = this.scene.sys.game.config.height;
         
-        let outOfBounds = false;
-        
-        if (this.sprite.x < -padding || this.sprite.x > width + padding || 
-            this.sprite.y < -padding || this.sprite.y > height + padding) {
-            outOfBounds = true;
+
+        // wrap the fish to the other side of the screen if out of bounds
+        if (this.sprite.x < -padding) {
+            this.sprite.x = width + padding;
         }
-        
-        // Change direction randomly or when out of bounds
-        if (outOfBounds || Math.random() < 0.005) {
-            this.setRandomDirection();
+        if (this.sprite.x > width + padding) {
+            this.sprite.x = -padding;
+        }
+        if (this.sprite.y < -padding) {
+            this.sprite.y = height + padding;
+        }
+        if (this.sprite.y > height + padding) {
+            this.sprite.y = -padding;
         }
     }
     

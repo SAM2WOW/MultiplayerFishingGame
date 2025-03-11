@@ -7,6 +7,9 @@ class StreamScene extends Phaser.Scene {
         this.amountOfFish = 9;
 
         this.players = [];
+
+        this.gameStarted = false;
+        this.gameTime = 30; // 30 seconds
     }
 
     preload() {
@@ -75,12 +78,58 @@ class StreamScene extends Phaser.Scene {
         //     });
         // }
         
+        // Add "Ready" text in the center
+        const readyText = this.add.text(width / 2, height / 2, 'Ready', {
+            fontSize: '64px',
+            fill: '#ffffff'
+        }).setOrigin(0.5);
+
+        // Create a timed event to count down and start the game
+        this.time.addEvent({
+            delay: 1000, // 1 second
+            repeat: 3, // 3 times
+            callback: () => {
+            if (readyText.text === 'Ready') {
+                readyText.setText('3');
+            } else if (readyText.text === '3') {
+                readyText.setText('2');
+            } else if (readyText.text === '2') {
+                readyText.setText('1');
+            } else {
+                readyText.setText('Go!');
+                this.time.addEvent({
+                delay: 500, // 0.5 second
+                callback: () => {
+                    readyText.destroy();
+
+                    // Add game timer text
+                    this.timeText = this.add.text(width / 2, height / 2, 'Time: 30s', {
+                        fontSize: '36px',
+                        fill: '#00ffff'
+                    }).setOrigin(0.5);
+
+                    // Add fish
+                    for (let i = 0; i < this.amountOfFish; i++) {
+                        const x = Math.random() * width;
+                        const y = Math.random() * height;
+                        new Fish(this, x, y, i);
+                    }
+
+                    // start the game
+                    this.gameStarted = true;
+
+                }
+                });
+            }
+            }
+        });
+
         // Add fish
-        for (let i = 0; i < this.amountOfFish; i++) {
-            const x = Math.random() * width;
-            const y = Math.random() * height;
-            new Fish(this, x, y, i);
-        }
+        // for (let i = 0; i < this.amountOfFish; i++) {
+        //     const x = Math.random() * width;
+        //     const y = Math.random() * height;
+        //     new Fish(this, x, y, i);
+        // }
         
         // // Add a few more ripples on top
         // for (let i = 0; i < 5; i++) {
@@ -131,6 +180,18 @@ class StreamScene extends Phaser.Scene {
     update(time, delta) {
         // Update all fish
         this.fishList.forEach(fish => fish.update(time, delta));
+
+        // Update game time
+        if (this.gameStarted) {
+            this.gameTime -= delta / 1000;
+
+            this.timeText.setText(`Time: ${this.gameTime.toFixed(1)}s`);
+            
+            if (this.gameTime <= 0) {
+                console.log('Game over!');
+                this.gameStarted = false;
+            }
+        }
     }
 }
 
