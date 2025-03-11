@@ -150,7 +150,7 @@ class ControllerScene extends Phaser.Scene {
 
             // Centered "Shake to Fish!" message above the shake meter
             const centerX = this.cameras.main.width / 2;
-            const shakeMeterY = 80;
+            const shakeMeterY = 120;
 
             this.shakeMessage = this.add.text(centerX, shakeMeterY - 30, 'Shake to Fish!', 
                 { fontSize: '24px', fill: '#ffffff' }).setOrigin(0.5);
@@ -167,12 +167,12 @@ class ControllerScene extends Phaser.Scene {
             this.shakeMeter = this.add.graphics();
             this.shakeMeter.fillStyle(0x00ff00, 1);
             //const centerX = this.cameras.main.width / 2;
-            const centerY = 80;
-            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, centerY - 10, 0, 20); // Initial width is 0
+            //const centerY = 80;
+            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, shakeMeterY, 0, 20); // Initial width is 0
 
             // make it outlined
             this.shakeMeter.lineStyle(2, 0x000000, 1);
-            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, centerY - 10, this.shakeMeterMax, 20);
+            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeMeterMax, 20);
 
             RPC.call('startCatching', { fishID: this.currentFish }, RPC.Mode.ALL);
         };
