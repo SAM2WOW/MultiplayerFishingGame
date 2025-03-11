@@ -9,7 +9,7 @@ class StreamScene extends Phaser.Scene {
         this.players = [];
 
         this.gameStarted = false;
-        this.gameTime = 30; // 30 seconds
+        this.gameTime = 5; // 30 seconds
     }
 
     preload() {
@@ -161,6 +161,11 @@ class StreamScene extends Phaser.Scene {
 
         // handle fish catching
         RPC.register('startCatching', (data, caller) => {
+            if (!this.gameStarted) {
+                return;
+            }
+
+            console.log("player info: ", caller);
             console.log(`Player ${caller.id} start catch fish #${data.fishID}`);
             // players[data.victimId].setState("dead", true);
 
@@ -170,6 +175,10 @@ class StreamScene extends Phaser.Scene {
         });
 
         RPC.register('endCatching', (data, caller) => {
+            if (!this.gameStarted) {
+                return;
+            }
+
             console.log(`Player ${caller.id} end catch fish #${data.fishID}: ${data.success ? 'caught' : 'missed'}`);
             // players[data.victimId].setState("dead", false);
 
@@ -185,11 +194,52 @@ class StreamScene extends Phaser.Scene {
         if (this.gameStarted) {
             this.gameTime -= delta / 1000;
 
-            this.timeText.setText(`Time: ${this.gameTime.toFixed(1)}s`);
-            
             if (this.gameTime <= 0) {
-                console.log('Game over!');
                 this.gameStarted = false;
+
+                // console.log('Game over!');
+                // this.timerText.destroy();
+
+                // remove all the fish
+                this.fishList.forEach(fish => fish.destroy());
+                this.fishList = [];
+
+                const width = this.sys.game.config.width;
+                const height = this.sys.game.config.height;
+
+                // Display "GAME OVER!" text
+                const gameOverText = this.add.text(width / 2, height / 2 - 100, 'GAME OVER!', {
+                    fontSize: '64px',
+                    fill: '#ffffff'
+                }).setOrigin(0.5);
+
+                // Sort players by score
+                const sortedPlayers = this.players.sort((a, b) => b.score - a.score);
+
+                // Display each player's score
+                sortedPlayers.forEach((player, index) => {
+                    this.add.text(width / 2, height / 2 - 50 + index * 30, `${player.name}: ${player.score}`, {
+                        fontSize: `${36 - index * 2}px`,
+                        fill: '#ffffff'
+                    }).setOrigin(0.5);
+                });
+
+                // Display restart message
+                const restartText = this.add.text(width / 2, height / 2 + 150, 'Game restarts in 20 seconds', {
+                    fontSize: '24px',
+                    fill: '#ffffff'
+                }).setOrigin(0.5);
+
+                // Restart game after 15 seconds
+                this.time.addEvent({
+                    delay: 20000,
+                    callback: () => {
+                        location.reload();
+                    }
+                });
+                
+            } else {
+                this.timeText.setText(`Time: ${this.gameTime.toFixed(1)}s`);
             }
         }
     }

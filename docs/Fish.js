@@ -165,6 +165,10 @@ class Fish {
             this.state = 'idle';
         }
     }
+
+    destroy() {
+        this.sprite.destroy();
+    }
 }
 
 export default Fish;
