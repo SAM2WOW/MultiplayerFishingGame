@@ -210,7 +210,15 @@
         insertCoin({ streamMode: true }).then(() => {
             document.getElementById('container').style.display = 'none';
             const game = new Phaser.Game(stream_config);
-            game.scene.start('StreamScene', { RPC });
+
+            const playerList = [];
+            onPlayerJoin((player) => {
+                console.log(`${player.id} SCREEN STARTED!`);
+                playerList.push(player);
+            });
+            // console.log(playerList);
+
+            game.scene.start('StreamScene', { RPC, playerList });
         });
     });
     
@@ -219,7 +227,8 @@
             document.getElementById('container').style.display = 'none';
             document.getElementById('qr-container').style.display = 'inherit';
             const game = new Phaser.Game(controller_config);
-            game.scene.start('ControllerScene', { RPC });
+
+            game.scene.start('ControllerScene', { RPC, myPlayer });
         });
     });
 

@@ -6,7 +6,8 @@ class StreamScene extends Phaser.Scene {
         this.fishList = [];
         this.amountOfFish = 9;
 
-        this.players = [];
+        // dictionary of players and their scores
+        this.players = {};
 
         this.gameStarted = false;
         this.gameTime = 5; // 30 seconds
@@ -152,10 +153,22 @@ class StreamScene extends Phaser.Scene {
         // }
 
         // Access RPC from the data object
-        const { RPC } = data;
+        const { RPC, playerList } = data;
+
+        console.log('Players:', playerList);
+
+        // Store players id
+        // players is a list
+        // Store players in a dictionary
+        playerList.forEach(player => {
+            this.players[player.id] = { score: 0, name: player.state.profile.name, icon_url: player.state.profile.photo };
+        });
+
+        console.log('Players:', this.players);
 
         // add test case
         RPC.register('testFishing', (data, caller) => {
+            console.log("player info: ", caller);
             console.log('Test RPC:', data);
         });
 
@@ -182,6 +195,12 @@ class StreamScene extends Phaser.Scene {
             console.log(`Player ${caller.id} end catch fish #${data.fishID}: ${data.success ? 'caught' : 'missed'}`);
             // players[data.victimId].setState("dead", false);
 
+            if (data.success) {
+                this.players[caller.id] += 1;
+            }
+
+            print('Player scores:', this.players);
+
             this.fishList[data.fishID].endCatchingFish(data.success);
         });
     }
@@ -197,8 +216,8 @@ class StreamScene extends Phaser.Scene {
             if (this.gameTime <= 0) {
                 this.gameStarted = false;
 
-                // console.log('Game over!');
-                // this.timerText.destroy();
+                console.log('Game over!');
+                this.timeText.destroy();
 
                 // remove all the fish
                 this.fishList.forEach(fish => fish.destroy());
@@ -214,18 +233,27 @@ class StreamScene extends Phaser.Scene {
                 }).setOrigin(0.5);
 
                 // Sort players by score
-                const sortedPlayers = this.players.sort((a, b) => b.score - a.score);
+                const sortedPlayers = Object.values(this.players).sort((a, b) => b.score - a.score);
 
                 // Display each player's score
                 sortedPlayers.forEach((player, index) => {
                     this.add.text(width / 2, height / 2 - 50 + index * 30, `${player.name}: ${player.score}`, {
                         fontSize: `${36 - index * 2}px`,
-                        fill: '#ffffff'
+                        fill: '#00ffff'
                     }).setOrigin(0.5);
                 });
 
+                // also display the photo next to their name (this is dataURL)
+                // sortedPlayers.forEach((player, index) => {
+                //     let img = new Image();
+                //     img.src = player.icon_url;
+                //     img.width = 50;
+                //     img.height = 50;
+                //     this.add.image(width / 2 - 100, height / 2 - 50 + index * 30, img);
+                // });
+
                 // Display restart message
-                const restartText = this.add.text(width / 2, height / 2 + 150, 'Game restarts in 20 seconds', {
+                const restartText = this.add.text(width / 2, height / 2 + 200, 'Game restarts in 20 seconds', {
                     fontSize: '24px',
                     fill: '#ffffff'
                 }).setOrigin(0.5);
