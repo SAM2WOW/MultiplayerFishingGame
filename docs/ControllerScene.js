@@ -88,7 +88,7 @@ class ControllerScene extends Phaser.Scene {
         html5QrcodeScanner.render(onScanSuccess);
 
         //to prefer back-facing camera
-        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
             .catch(err => {
         // Handle errors, such as when the back-facing camera is not available
                 console.error("Error starting the scanner:", err);
