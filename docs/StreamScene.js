@@ -199,7 +199,8 @@ class StreamScene extends Phaser.Scene {
                 this.players[caller.id] += 1;
             }
 
-            print('Player scores:', this.players);
+            //print('Player scores:', this.players);
+            console.log('Player scores:', this.players);
 
             this.fishList[data.fishID].endCatchingFish(data.success);
         });
