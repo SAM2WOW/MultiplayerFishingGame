@@ -182,18 +182,12 @@ class StreamScene extends Phaser.Scene {
         playerList.forEach((player, index) => {
             let yOffset = 70 + index * 40;
 
-            // Create player icon
-            let playerIcon = this.add.image(40, yOffset, 'playerIcon').setOrigin(0.5);
-            playerIcon.setDisplaySize(30, 30);
-            playerIcon.setTexture(player.state.profile.photo); // Load image URL from player data
 
             // Create player score text next to icon
             this.scoreEntries[player.id] = this.add.text(70, yOffset,
                 `${player.state.profile.name}: 0`, { fontSize: '24px', fill: '#ffca3a' }
             );
 
-            // Store the icon entry for later updates
-            this.iconEntries[player.id] = playerIcon;
         });
 
         // Update scores dynamically

@@ -40,11 +40,6 @@ class ControllerScene extends Phaser.Scene {
         topUI.fillStyle(0xffffff, 1); // White background
         topUI.fillRect(0, 0, this.cameras.main.width, 50);
 
-        // Display player icon (left side)
-        let playerIcon = this.add.image(25, 25, 'playerIcon').setOrigin(0.5);
-        playerIcon.setDisplaySize(40, 40);
-        playerIcon.setTexture(this.playerData.state.profile.photo);
-
         // Display player name (next to icon)
         let playerName = this.add.text(50, 15, this.playerData.state.profile.name, 
             { fontSize: '20px', fill: '#000000' }); // Black text
