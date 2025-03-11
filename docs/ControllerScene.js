@@ -92,10 +92,44 @@ class ControllerScene extends Phaser.Scene {
             }
         };
 
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA] });
-        html5QrcodeScanner.render(onScanSuccess);
 
+        //var html5QrcodeScanner = new Html5QrcodeScanner(
+        //    "qr-reader", { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA] });
+        //html5QrcodeScanner.render(onScanSuccess);
+
+        //////TESTING TO CHOOSE BACK-FACING CAMERA AUTOMATICALLY//////
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        // Function to start scanner with the correct camera
+        const startScanner = (cameraId) => {
+            html5QrCode.start(cameraId, config, onScanSuccess)
+                .catch(err => {
+                    console.error("Error starting scanner:", err);
+                });
+        };
+
+        // Detect available cameras and select the back camera
+        navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                const videoDevices = devices.filter(device => device.kind === "videoinput");
+                
+                // Try to find a back-facing camera
+                let backCamera = videoDevices.find(device => device.label.toLowerCase().includes("back"));
+
+                if (backCamera) {
+                    console.log("Using back-facing camera:", backCamera.label);
+                    startScanner(backCamera.deviceId);
+                } else {
+                    console.warn("No back camera found, using default.");
+                    startScanner({ facingMode: "environment" });
+                }
+            })
+            .catch(err => {
+                console.error("Error detecting cameras:", err);
+                startScanner({ facingMode: "environment" }); // Fallback
+            });
+        /////////////////////CAMERA TESTING END//////////////////////
         
 
         // Function to show the "Fish Found" message
