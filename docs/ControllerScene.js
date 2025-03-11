@@ -150,7 +150,7 @@ class ControllerScene extends Phaser.Scene {
 
             // Centered "Shake to Fish!" message above the shake meter
             const centerX = this.cameras.main.width / 2;
-            const shakeMeterY = 120;
+            const shakeMeterY = 150;
 
             this.shakeMessage = this.add.text(centerX, shakeMeterY - 30, 'Shake to Fish!', 
                 { fontSize: '24px', fill: '#ffffff' }).setOrigin(0.5);
