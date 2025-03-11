@@ -40,15 +40,15 @@ class ControllerScene extends Phaser.Scene {
         topUI.fillStyle(0xffffff, 1); // White background
         topUI.fillRect(0, 0, this.cameras.main.width, 50);
 
-        // Display player name (next to icon)
-        let playerName = this.add.text(50, 15, this.playerData.state.profile.name, 
+        // Display player name (left side)
+        let playerName = this.add.text(15, 15, this.playerData.state.profile.name, 
             { fontSize: '20px', fill: '#000000' }); // Black text
 
         // Display player score (right side)
-        this.scoreText = this.add.text(this.cameras.main.width - 100, 15, 'Score: 0', 
+        this.scoreText = this.add.text(this.cameras.main.width - 20, 15, 'Score: 0', 
             { fontSize: '20px', fill: '#000000' }); // Black text
 
-        // Adjust score position to stay aligned
+        // Adjust score position to align to the right
         this.scoreText.setOrigin(1, 0);
 
         // Function to update the score
@@ -160,15 +160,27 @@ class ControllerScene extends Phaser.Scene {
             });
 
             // Create the shake meter
-            this.shakeMeter = this.add.graphics();
-            this.shakeMeter.fillStyle(0x00ff00, 1);
-            const centerX = this.cameras.main.width / 2;
-            const centerY = this.cameras.main.height / 2;
-            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, centerY - 10, 0, 20); // Initial width is 0
+            //this.shakeMeter = this.add.graphics();
+            //this.shakeMeter.fillStyle(0x00ff00, 1);
+            //const centerX = this.cameras.main.width / 2;
+            //const centerY = this.cameras.main.height / 2;
+            //this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, centerY - 10, 0, 20); // Initial width is 0
 
             // make it outlined
+            //this.shakeMeter.lineStyle(2, 0x000000, 1);
+            //this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, centerY - 10, this.shakeMeterMax, 20);
+
+            // Center the shake meter below the top UI
+            const centerX = this.cameras.main.width / 2;
+            const shakeMeterY = 80;
+
+            this.shakeMeter = this.add.graphics();
+            this.shakeMeter.fillStyle(0x00ff00, 1);
+            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, shakeMeterY, 0, 20); // Initial width is 0
+
+            // Create outline for the meter
             this.shakeMeter.lineStyle(2, 0x000000, 1);
-            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, centerY - 10, this.shakeMeterMax, 20);
+            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeMeterMax, 20);
 
             RPC.call('startCatching', { fishID: this.currentFish }, RPC.Mode.ALL);
         };

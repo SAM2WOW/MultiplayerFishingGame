@@ -176,18 +176,13 @@ class StreamScene extends Phaser.Scene {
         this.scoreTitle = this.add.text(30, 30, 'Leaderboard', { fontSize: '28px', fill: '#ffffff', fontStyle: 'bold' });
 
         this.scoreEntries = {}; // Store player score text objects
-        this.iconEntries = {};  // Store player icons
 
         // Initialize player scores and icons
         playerList.forEach((player, index) => {
             let yOffset = 70 + index * 40;
-
-
-            // Create player score text next to icon
-            this.scoreEntries[player.id] = this.add.text(70, yOffset,
+            this.scoreEntries[player.id] = this.add.text(30, yOffset,
                 `${player.state.profile.name}: 0`, { fontSize: '24px', fill: '#ffca3a' }
             );
-
         });
 
         // Update scores dynamically
