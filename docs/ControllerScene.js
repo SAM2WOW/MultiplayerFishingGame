@@ -33,10 +33,28 @@ class ControllerScene extends Phaser.Scene {
         });
 
         // Player Score UI
-        this.score = 0;
-        //this.scoreText = this.add.text(10, this.cameras.main.height - 30, 'Score: 0', { fontSize: '24px', fill: '#fff' });
-        this.scoreText = this.add.text(10, 40, 'Score: 0', { fontSize: '24px', fill: '#ffca3a' });
+        //this.score = 0;
+        //this.scoreText = this.add.text(10, 40, 'Score: 0', { fontSize: '24px', fill: '#ffca3a' });
+        // Create top UI background
+        let topUI = this.add.graphics();
+        topUI.fillStyle(0xffffff, 1); // White background
+        topUI.fillRect(0, 0, this.cameras.main.width, 50);
 
+        // Display player icon (left side)
+        let playerIcon = this.add.image(25, 25, 'playerIcon').setOrigin(0.5);
+        playerIcon.setDisplaySize(40, 40);
+        playerIcon.setTexture(this.playerData.state.profile.photo);
+
+        // Display player name (next to icon)
+        let playerName = this.add.text(50, 15, this.playerData.state.profile.name, 
+            { fontSize: '20px', fill: '#000000' }); // Black text
+
+        // Display player score (right side)
+        this.scoreText = this.add.text(this.cameras.main.width - 100, 15, 'Score: 0', 
+            { fontSize: '20px', fill: '#000000' }); // Black text
+
+        // Adjust score position to stay aligned
+        this.scoreText.setOrigin(1, 0);
 
         // Function to update the score
         this.updateScore = (points) => {
@@ -97,7 +115,7 @@ class ControllerScene extends Phaser.Scene {
         //    "qr-reader", { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA] });
         //html5QrcodeScanner.render(onScanSuccess);
 
-        //////TESTING TO CHOOSE BACK-FACING CAMERA AUTOMATICALLY//////
+        ///////////CHOOSE BACK-FACING CAMERA AUTOMATICALLY///////////
         const html5QrCode = new Html5Qrcode("qr-reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
@@ -129,7 +147,7 @@ class ControllerScene extends Phaser.Scene {
                 console.error("Error detecting cameras:", err);
                 startScanner({ facingMode: "environment" }); // Fallback
             });
-        /////////////////////CAMERA TESTING END//////////////////////
+        /////////////////////CAMERA SELECTION END//////////////////////
         
 
         // Function to show the "Fish Found" message

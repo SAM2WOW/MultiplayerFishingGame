@@ -167,30 +167,43 @@ class StreamScene extends Phaser.Scene {
         console.log('Players:', this.players);
 
         //////////////////PLAYER SCOREBOARD/////////////////////
+        // Create scoreboard background with transparency
+        this.scoreboard = this.add.graphics();
+        this.scoreboard.fillStyle(0x000000, 0.5); // 50% opacity black
+        this.scoreboard.fillRoundedRect(20, 20, 350, 200, 15); // Adjusted width
+
         // Scoreboard title
-        this.scoreText = this.add.text(20, 20, 'Scores:', {
-            fontSize: '32px',
-            fill: '#ffffff'
-        });
+        this.scoreTitle = this.add.text(30, 30, 'Leaderboard', { fontSize: '28px', fill: '#ffffff', fontStyle: 'bold' });
 
         this.scoreEntries = {}; // Store player score text objects
+        this.iconEntries = {};  // Store player icons
 
-        // Initialize player scores
-        playerList.forEach(player => {
-            this.players[player.id] = { score: 0, name: player.state.profile.name };
-            this.scoreEntries[player.id] = this.add.text(20, 60 + Object.keys(this.players).length * 30,
-                `${player.state.profile.name}: 0`, { fontSize: '28px', fill: '#ffca3a' });
+        // Initialize player scores and icons
+        playerList.forEach((player, index) => {
+            let yOffset = 70 + index * 40;
+
+            // Create player icon
+            let playerIcon = this.add.image(40, yOffset, 'playerIcon').setOrigin(0.5);
+            playerIcon.setDisplaySize(30, 30);
+            playerIcon.setTexture(player.state.profile.photo); // Load image URL from player data
+
+            // Create player score text next to icon
+            this.scoreEntries[player.id] = this.add.text(70, yOffset,
+                `${player.state.profile.name}: 0`, { fontSize: '24px', fill: '#ffca3a' }
+            );
+
+            // Store the icon entry for later updates
+            this.iconEntries[player.id] = playerIcon;
         });
 
-        // RPC function for updating scores
+        // Update scores dynamically
         RPC.register('updateScore', (data) => {
             this.players[data.playerID].score = data.newScore;
-
-            // Update the displayed score
             this.scoreEntries[data.playerID].setText(
                 `${this.players[data.playerID].name}: ${data.newScore}`
             );
         });
+
         ////////////END SCOREBOARD////////////////
 
         // add test case
