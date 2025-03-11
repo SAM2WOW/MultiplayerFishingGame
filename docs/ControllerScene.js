@@ -42,6 +42,9 @@ class ControllerScene extends Phaser.Scene {
             this.scoreText.setText('Score: ' + this.score);
         };
 
+        // display the player name on top left with a red color
+        this.add.text(10, 10, this.playerData.state.profile.name, { fontSize: '24px', fill: '#ff0000' });
+
         // fire a test RPC when player touch
         // this.input.on('pointerdown', () => {
         //     RPC.call('testFishing', { fishID: 'test' }, RPC
