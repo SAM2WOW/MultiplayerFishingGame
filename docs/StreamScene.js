@@ -272,7 +272,7 @@ class StreamScene extends Phaser.Scene {
 
                 // Display each player's score
                 sortedPlayers.forEach((player, index) => {
-                    this.add.text(width / 2, height / 2 - 50 + index * 30, `${player.name}: ${player.score}`, {
+                    this.add.text(width / 2, height / 2 - 50 + index * 30, `${index + 1}. ${player.name}: ${player.score}`, {
                         fontSize: `${36 - index * 2}px`,
                         fill: '#00ffff'
                     }).setOrigin(0.5);
