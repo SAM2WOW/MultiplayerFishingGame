@@ -166,6 +166,33 @@ class StreamScene extends Phaser.Scene {
 
         console.log('Players:', this.players);
 
+        //////////////////PLAYER SCOREBOARD/////////////////////
+        // Scoreboard title
+        this.scoreText = this.add.text(20, 20, 'Scores:', {
+            fontSize: '32px',
+            fill: '#ffffff'
+        });
+
+        this.scoreEntries = {}; // Store player score text objects
+
+        // Initialize player scores
+        playerList.forEach(player => {
+            this.players[player.id] = { score: 0, name: player.state.profile.name };
+            this.scoreEntries[player.id] = this.add.text(20, 60 + Object.keys(this.players).length * 30,
+                `${player.state.profile.name}: 0`, { fontSize: '28px', fill: '#ffca3a' });
+        });
+
+        // RPC function for updating scores
+        RPC.register('updateScore', (data) => {
+            this.players[data.playerID].score = data.newScore;
+
+            // Update the displayed score
+            this.scoreEntries[data.playerID].setText(
+                `${this.players[data.playerID].name}: ${data.newScore}`
+            );
+        });
+        ////////////END SCOREBOARD////////////////
+
         // add test case
         RPC.register('testFishing', (data, caller) => {
             console.log("player info: ", caller);
@@ -196,14 +223,21 @@ class StreamScene extends Phaser.Scene {
             // players[data.victimId].setState("dead", false);
 
             if (data.success) {
-                this.players[caller.id] += 1;
+                this.players[caller.id].score += 1;
+
+                // Update UI and send new score to players
+                RPC.call('updateScore', { playerID: caller.id, newScore: this.players[caller.id].score }, RPC.Mode.ALL);
             }
 
+            // BUG: the print statement was being interpreted as print screen on browser
+            // changed to console.log for now
             //print('Player scores:', this.players);
             console.log('Player scores:', this.players);
 
             this.fishList[data.fishID].endCatchingFish(data.success);
         });
+
+        
     }
     
     update(time, delta) {
