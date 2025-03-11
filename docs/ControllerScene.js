@@ -84,15 +84,10 @@ class ControllerScene extends Phaser.Scene {
         };
 
         var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250 });
+            "qr-reader", { fps: 10, qrbox: 250, supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA] });
         html5QrcodeScanner.render(onScanSuccess);
 
-        //to prefer back-facing camera
-        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-            .catch(err => {
-        // Handle errors, such as when the back-facing camera is not available
-                console.error("Error starting the scanner:", err);
-            });
+        
 
         // Function to show the "Fish Found" message
         this.startCatchingFish = () => {
