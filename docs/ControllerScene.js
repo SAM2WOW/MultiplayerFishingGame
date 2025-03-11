@@ -40,7 +40,7 @@ class ControllerScene extends Phaser.Scene {
 
         // Function to update the score
         this.updateScore = (points) => {
-            this.score = points;
+            this.score += points;
             this.scoreText.setText('Score: ' + this.score);
         };
 
