@@ -31,14 +31,16 @@ class ControllerScene extends Phaser.Scene {
             RPC.call('testFishing', { fishID: 'test' }, RPC.Mode.ALL);
             console.log('Test RPC fired');
         });
-        
-        // Create a score text at the bottom of the canvas
+
+        // Player Score UI
         this.score = 0;
-        this.scoreText = this.add.text(10, this.cameras.main.height - 30, 'Score: 0', { fontSize: '24px', fill: '#fff' });
+        //this.scoreText = this.add.text(10, this.cameras.main.height - 30, 'Score: 0', { fontSize: '24px', fill: '#fff' });
+        this.scoreText = this.add.text(10, 40, 'Score: 0', { fontSize: '24px', fill: '#ffca3a' });
+
 
         // Function to update the score
         this.updateScore = (points) => {
-            this.score += points;
+            this.score = points;
             this.scoreText.setText('Score: ' + this.score);
         };
 
