@@ -62,7 +62,7 @@ class ControllerScene extends Phaser.Scene {
         });
 
         // display the player name on top left with a red color
-        this.add.text(10, 10, this.playerData.state.profile.name, { fontSize: '24px', fill: '#ff0000' });
+        //this.add.text(10, 10, this.playerData.state.profile.name, { fontSize: '24px', fill: '#ff0000' });
 
         // fire a test RPC when player touch
         // this.input.on('pointerdown', () => {
@@ -145,8 +145,15 @@ class ControllerScene extends Phaser.Scene {
         // Function to show the "Fish Found" message
         this.startCatchingFish = () => {
             console.log('Fish detected!');
-            const message = this.add.text(150, 100, 'Shake to fish!', { fontSize: '24px', fill: '#fff' });
-            message.setOrigin(0.5);
+            //const message = this.add.text(150, 100, 'Shake to fish!', { fontSize: '24px', fill: '#fff' });
+            //message.setOrigin(0.5);
+
+            // Centered "Shake to Fish!" message above the shake meter
+            const centerX = this.cameras.main.width / 2;
+            const shakeMeterY = 80;
+
+            this.shakeMessage = this.add.text(centerX, shakeMeterY - 30, 'Shake to Fish!', 
+                { fontSize: '24px', fill: '#ffffff' }).setOrigin(0.5);
 
             this.fishDetected = true;
 
@@ -159,8 +166,8 @@ class ControllerScene extends Phaser.Scene {
             // Create the shake meter
             this.shakeMeter = this.add.graphics();
             this.shakeMeter.fillStyle(0x00ff00, 1);
-            const centerX = this.cameras.main.width / 2;
-            const centerY = this.cameras.main.height / 2;
+            //const centerX = this.cameras.main.width / 2;
+            const centerY = 80;
             this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, centerY - 10, 0, 20); // Initial width is 0
 
             // make it outlined
@@ -175,6 +182,7 @@ class ControllerScene extends Phaser.Scene {
                 this.fishDetected = false;
                 this.shakeProgress = 0;
                 this.shakeMeter.clear();
+                this.shakeMessage.destroy();
             }
         };
 
