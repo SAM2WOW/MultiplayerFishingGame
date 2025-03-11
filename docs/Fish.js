@@ -21,13 +21,13 @@ class Fish {
 
         // speed is based on rarity
         if (this.rarity == 'common') {
-            this.speed = 80.0;
+            this.speed = 50.0;
         }
         else if (this.rarity == 'rare') {
-            this.speed = 200.0;
+            this.speed = 100.0;
         }
         else {
-            this.speed = 400.0;
+            this.speed = 200.0;
         }
 
         // Create the fish sprite
