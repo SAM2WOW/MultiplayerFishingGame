@@ -40,9 +40,16 @@ class ControllerScene extends Phaser.Scene {
 
         // Function to update the score
         this.updateScore = (points) => {
-            this.score += points;
+            this.score = points;
             this.scoreText.setText('Score: ' + this.score);
         };
+
+        // Listen for score updates from host
+        RPC.register('updateScore', (data) => {
+            if (data.playerID === this.playerData.id) {
+                this.updateScore(data.newScore);
+            }
+        });
 
         // display the player name on top left with a red color
         this.add.text(10, 10, this.playerData.state.profile.name, { fontSize: '24px', fill: '#ff0000' });
