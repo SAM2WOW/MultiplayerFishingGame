@@ -163,6 +163,7 @@ class Fish {
         {
             // failed to catch fish
             this.state = 'idle';
+            this.sprite.clearTint(); // Remove red tint on miss
         }
     }
 
