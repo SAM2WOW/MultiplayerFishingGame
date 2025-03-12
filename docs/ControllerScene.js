@@ -13,6 +13,14 @@ class ControllerScene extends Phaser.Scene {
         // TODO: Fix issue when fish already caught when player catch RPC
     }
 
+    preload() {
+        // load the audios
+        this.load.audio('catch', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/catch_controller.mp3');
+        this.load.audio('miss', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/miss_controller.mp3');
+        this.load.audio("pulling", "https://sam2wow.github.io/MultiplayerFishingGame/sounds/pulling.mp3");
+        this.load.audio("gameover", "https://sam2wow.github.io/MultiplayerFishingGame/sounds/gameover_controller.mp3");
+    }
+
     create(data) {
         var resultContainer = document.getElementById('qr-reader-results');
         var lastResult, countResults = 0;
@@ -69,6 +77,8 @@ class ControllerScene extends Phaser.Scene {
 
             this.shakeMessage = this.add.text(width / 2, height / 2, 'Game Over!',
                 { fontSize: '48px', fill: '#ffffff' }).setOrigin(0.5);
+            
+            
         });
 
         // display the player name on top left with a red color
@@ -159,15 +169,22 @@ class ControllerScene extends Phaser.Scene {
             const centerX = this.cameras.main.width / 2;
             const shakeMeterY = 150;
 
+            // create the pulling sounds
+            this.pullingSound = this.sound.add("pulling", { loop: true });
+            this.pullingSound.play();
+
             this.shakeMessage = this.add.text(centerX, shakeMeterY - 30, 'Shake to Fish!', 
                 { fontSize: '24px', fill: '#ffffff' }).setOrigin(0.5);
 
             this.fishDetected = true;
 
-            this.time.delayedCall(10000, () => {
+            this.time.delayedCall(7000, () => {
                 this.shakeMessage.destroy(); // Corrected variable name
                 RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
                 this.resetFishProgress();
+
+                // play the miss sound
+                this.sound.play('miss');
             });
 
             // Create the shake meter
@@ -183,12 +200,13 @@ class ControllerScene extends Phaser.Scene {
         };
 
         this.resetFishProgress = () => {
-            if (this.fishDetected) {
-                this.fishDetected = false;
-                this.shakeProgress = 0;
-                this.shakeMeter.clear();
-                this.shakeMessage.destroy();
-            }
+            this.fishDetected = false;
+            this.shakeProgress = 0;
+            this.shakeMeter.clear();
+            this.shakeMessage.destroy();
+
+            // delete pulling sound
+            this.pullingSound.stop();
         };
 
         // Detect shake event
@@ -233,7 +251,10 @@ class ControllerScene extends Phaser.Scene {
                                         this.resetFishProgress();
         
                                         RPC.call('endCatching', { fishID: this.currentFish, success: true }, RPC.Mode.ALL);
-        
+                                        
+                                        // play the catch sound
+                                        this.sound.play('catch');
+
                                         // Update the score
                                         this.updateScore(this.score + 1); // Corrected score update
                                     }

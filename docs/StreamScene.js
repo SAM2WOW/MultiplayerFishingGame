@@ -10,7 +10,7 @@ class StreamScene extends Phaser.Scene {
         this.players = {};
 
         this.gameStarted = false;
-        this.gameTime = 10; // 120 seconds
+        this.gameTime = 120; // 120 seconds
     }
 
     preload() {
