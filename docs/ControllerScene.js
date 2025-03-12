@@ -19,6 +19,9 @@ class ControllerScene extends Phaser.Scene {
         this.load.audio('miss', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/miss_controller.mp3');
         this.load.audio("pulling", "https://sam2wow.github.io/MultiplayerFishingGame/sounds/pulling.mp3");
         this.load.audio("gameover", "https://sam2wow.github.io/MultiplayerFishingGame/sounds/gameover_controller.mp3");
+
+        this.load.audio('catch_people', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/catch_people.mp3');
+        this.load.audio('miss_people', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/miss_people.mp3');
     }
 
     create(data) {
@@ -111,6 +114,11 @@ class ControllerScene extends Phaser.Scene {
                 // only react when the text starts with fg
                 // example: fg0, fg1
                 if (decodedText.startsWith('fg')) {
+                    if (this.currentFish !== null) {
+                        console.log('Already catching a fish');
+                        return;
+                    }
+
                     // get the fish id
                     let fishID = parseInt(decodedText.substring(2));
                     console.log('Fish ID:', fishID);
@@ -186,6 +194,7 @@ class ControllerScene extends Phaser.Scene {
 
                 // play the miss sound
                 this.sound.play('miss');
+                this.sound.play('miss_people');
             });
 
             // Create the shake meter
@@ -255,6 +264,7 @@ class ControllerScene extends Phaser.Scene {
                                         
                                         // play the catch sound
                                         this.sound.play('catch');
+                                        this.sound.play('catch_people');
 
                                         // Update the score
                                         this.updateScore(this.score + 1); // Corrected score update
@@ -308,7 +318,11 @@ class ControllerScene extends Phaser.Scene {
                                 this.resetFishProgress();
     
                                 RPC.call('endCatching', { fishID: this.currentFish, success: true }, RPC.Mode.ALL);
-    
+                                
+                                // play the catch sound
+                                this.sound.play('catch');
+                                this.sound.play('catch_people');
+
                                 // Update the score
                                 this.updateScore(this.score + 1); // Corrected score update
                             }

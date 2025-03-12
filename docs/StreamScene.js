@@ -260,10 +260,63 @@ class StreamScene extends Phaser.Scene {
                 const fishPosition = this.fishList[data.fishID].sprite.getCenter();
                 this.sound.play('catch', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
+                // Create splash particle effect
+                const splash = this.add.particles('fish').createEmitter({
+                    x: fishPosition.x,
+                    y: fishPosition.y,
+                    speed: { min: -200, max: 200 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 0.5, end: 0 },
+                    alpha: { start: 1, end: 0 },
+                    lifespan: 500,
+                    blendMode: 'ADD'
+                });
+
+                // Destroy the emitter after the splash effect
+                this.time.addEvent({
+                    delay: 500,
+                    callback: () => {
+                        splash.stop();
+                    }
+                });
+
+                // Display catch text at fish position
+                const catchText = this.add.text(fishPosition.x, fishPosition.y, `Caught by ${this.players[caller.id].name}!`, {
+                    fontSize: '24px',
+                    fill: '#ffca3a'
+                }).setOrigin(0.5);
+
+                // Destroy the text after 3 seconds
+                this.time.addEvent({
+                    delay: 3000,
+                    callback: () => {
+                        catchText.destroy();
+                    }
+                });
             } else {
                 // play miss sound at fish position
                 const fishPosition = this.fishList[data.fishID].sprite.getCenter();
                 this.sound.play('miss', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
+
+                // Create a puff cloud particle effect
+                const puff = this.add.particles('fish').createEmitter({
+                    x: fishPosition.x,
+                    y: fishPosition.y,
+                    speed: { min: -100, max: 100 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 0.5, end: 0 },
+                    alpha: { start: 1, end: 0 },
+                    lifespan: 500,
+                    blendMode: 'ADD'
+                });
+
+                // Destroy the emitter after the puff effect
+                this.time.addEvent({
+                    delay: 500,
+                    callback: () => {
+                        puff.stop();
+                    }
+                });
             }
 
             // BUG: the print statement was being interpreted as print screen on browser
