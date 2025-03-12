@@ -138,7 +138,7 @@ class StreamScene extends Phaser.Scene {
                     this.gameStarted = true;
 
                     // Add background music and make it not loop
-                    this.sound.add('bgm', { loop: true });
+                    this.sound.add('bgm', { loop: true, volume: 0.8 });
                     this.sound.play('bgm');
 
                     // play splash sound
@@ -258,12 +258,12 @@ class StreamScene extends Phaser.Scene {
                 
                 // play catch sound 2d at the fish position
                 const fishPosition = this.fishList[data.fishID].sprite.getCenter();
-                this.sound.play('catch', { volume: 0.5, detune: 100, rate: 1.5, seek: 0.5, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
+                this.sound.play('catch', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
             } else {
                 // play miss sound at fish position
                 const fishPosition = this.fishList[data.fishID].sprite.getCenter();
-                this.sound.play('miss', { volume: 0.5, detune: 100, rate: 1.5, seek: 0.5, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
+                this.sound.play('miss', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
             }
 
             // BUG: the print statement was being interpreted as print screen on browser
