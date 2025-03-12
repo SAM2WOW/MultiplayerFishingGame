@@ -78,7 +78,8 @@ class ControllerScene extends Phaser.Scene {
             this.shakeMessage = this.add.text(width / 2, height / 2, 'Game Over!',
                 { fontSize: '48px', fill: '#ffffff' }).setOrigin(0.5);
             
-            
+            // play the game over sound
+            this.sound.play('gameover');
         });
 
         // display the player name on top left with a red color

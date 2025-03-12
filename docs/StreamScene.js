@@ -48,10 +48,6 @@ class StreamScene extends Phaser.Scene {
         const bg = this.add.sprite(width/2, height/2, 'background');
         bg.setDisplaySize(width, height);
         bg.setTint(0x2288cc);
-
-        // Add background music and make it not loop
-        this.sound.add('bgm', { loop: true });
-        this.sound.play('bgm');
         
         // Add ripples
         // for (let i = 0; i < 8; i++) {
@@ -132,6 +128,10 @@ class StreamScene extends Phaser.Scene {
 
                     // start the game
                     this.gameStarted = true;
+
+                    // Add background music and make it not loop
+                    this.sound.add('bgm', { loop: true });
+                    this.sound.play('bgm');
 
                 }
                 });
@@ -244,6 +244,15 @@ class StreamScene extends Phaser.Scene {
 
                 // Update UI and send new score to players
                 RPC.call('updateScore', { playerID: caller.id, newScore: this.players[caller.id].score }, RPC.Mode.ALL);
+                
+                // play catch sound 2d at the fish position
+                const fishPosition = this.fishList[data.fishID].sprite.getCenter();
+                this.sound.play('catch', { volume: 0.5, detune: 100, rate: 1.5, seek: 0.5, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
+
+            } else {
+                // play miss sound at fish position
+                const fishPosition = this.fishList[data.fishID].sprite.getCenter();
+                this.sound.play('miss', { volume: 0.5, detune: 100, rate: 1.5, seek: 0.5, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
             }
 
             // BUG: the print statement was being interpreted as print screen on browser
@@ -320,7 +329,9 @@ class StreamScene extends Phaser.Scene {
                 this.time.addEvent({
                     delay: 20000,
                     callback: () => {
-                        location.reload();
+                        // location.reload();
+                        //open the webpage instead
+                        window.open('https://sam2wow.github.io/MultiplayerFishingGame/', '_self');
                     }
                 });
                 
