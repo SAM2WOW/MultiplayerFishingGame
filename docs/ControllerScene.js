@@ -74,6 +74,9 @@ class ControllerScene extends Phaser.Scene {
 
         // listen for game over event
         RPC.register('gameOver', (data) => {
+            if (data) {
+            }
+            
             // delete score text
             this.scoreText.destroy();
             this.currentFish = 0;

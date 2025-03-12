@@ -10,7 +10,7 @@ class StreamScene extends Phaser.Scene {
         this.players = {};
 
         this.gameStarted = false;
-        this.gameTime = 120; // 120 seconds
+        this.gameTime = 5; // 120 seconds
     }
 
     preload() {
@@ -346,7 +346,7 @@ class StreamScene extends Phaser.Scene {
                 }).setOrigin(0.5);
 
                 // call the RPC for gameOver
-                // RPC.call('gameOver', { playerID: caller.id }, RPC.Mode.ALL);
+                RPC.call('gameOver', { playerID: "0000" }, RPC.Mode.ALL);
 
                 // Restart game after 15 seconds
                 this.time.addEvent({
