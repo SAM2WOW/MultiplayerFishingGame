@@ -36,7 +36,9 @@ class StreamScene extends Phaser.Scene {
         this.load.audio('catch', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/catch.mp3');
         this.load.audio('miss', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/miss.mp3');
 
-        // load game over sound
+        // load game sounds
+        this.load.audio('ready', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/ready.mp3');
+        this.load.audio('count', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/count.mp3');
         this.load.audio('gameover', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/gameover.mp3');
     }
     
@@ -95,6 +97,9 @@ class StreamScene extends Phaser.Scene {
             fill: '#ffffff'
         }).setOrigin(0.5);
 
+        // play ready sound
+        this.sound.play('ready');
+
         // Create a timed event to count down and start the game
         this.time.addEvent({
             delay: 1000, // 1 second
@@ -102,10 +107,13 @@ class StreamScene extends Phaser.Scene {
             callback: () => {
             if (readyText.text === 'Ready') {
                 readyText.setText('3');
+                this.sound.play('count');
             } else if (readyText.text === '3') {
                 readyText.setText('2');
+                this.sound.play('count');
             } else if (readyText.text === '2') {
                 readyText.setText('1');
+                this.sound.play('count');
             } else {
                 readyText.setText('Go!');
                 this.time.addEvent({
@@ -132,6 +140,9 @@ class StreamScene extends Phaser.Scene {
                     // Add background music and make it not loop
                     this.sound.add('bgm', { loop: true });
                     this.sound.play('bgm');
+
+                    // play splash sound
+                    this.sound.play('catch');
 
                 }
                 });
