@@ -145,9 +145,6 @@ class ControllerScene extends Phaser.Scene {
         // Function to show the "Fish Found" message
         this.startCatchingFish = () => {
             console.log('Fish detected!');
-            //const message = this.add.text(150, 100, 'Shake to fish!', { fontSize: '24px', fill: '#fff' });
-            //message.setOrigin(0.5);
-
             // Centered "Shake to Fish!" message above the shake meter
             const centerX = this.cameras.main.width / 2;
             const shakeMeterY = 150;
@@ -158,7 +155,7 @@ class ControllerScene extends Phaser.Scene {
             this.fishDetected = true;
 
             this.time.delayedCall(10000, () => {
-                message.destroy();
+                this.shakeMessage.destroy(); // Corrected variable name
                 RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
                 this.resetFishProgress();
             });
@@ -166,8 +163,6 @@ class ControllerScene extends Phaser.Scene {
             // Create the shake meter
             this.shakeMeter = this.add.graphics();
             this.shakeMeter.fillStyle(0x00ff00, 1);
-            //const centerX = this.cameras.main.width / 2;
-            //const centerY = 80;
             this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, shakeMeterY, 0, 20); // Initial width is 0
 
             // make it outlined
@@ -190,50 +185,104 @@ class ControllerScene extends Phaser.Scene {
         let lastUpdate = 0;
         let x = 0, y = 0, z = 0, lastX = 0, lastY = 0, lastZ = 0;
 
-        if (window.DeviceMotionEvent) {
+        // request permission for device motion
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission()
+            .then(response => {
+                if (response == 'granted') {
+                    window.addEventListener('devicemotion', (event) => {
+                        let acceleration = event.accelerationIncludingGravity;
+                        let currentTime = new Date().getTime();
+                        if ((currentTime - lastUpdate) > 100) {
+                            let diffTime = currentTime - lastUpdate;
+                            lastUpdate = currentTime;
+        
+                            x = acceleration.x;
+                            y = acceleration.y;
+                            z = acceleration.z;
+        
+                            let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+        
+                            if (speed > this.shakeThreshold) {
+                                // Shake detected, increase shake progress based on speed
+                                if (this.fishDetected) {
+                                    this.shakeProgress += 15; // Increase progress based on speed
+        
+                                    const centerX = this.cameras.main.width / 2;
+                                    const shakeMeterY = 150; // Corrected position
+                                    
+                                    this.shakeMeter.clear();
+                                    this.shakeMeter.fillStyle(0x00ff00, 1);
+                                    this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeProgress, 20);
+        
+                                    this.shakeMeter.lineStyle(2, 0x000000, 1);
+                                    this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeMeterMax, 20);
+        
+                                    if (this.shakeProgress >= this.shakeMeterMax) {
+                                        // Shake meter is full, catch the fish
+                                        this.resetFishProgress();
+        
+                                        RPC.call('endCatching', { fishID: this.currentFish, success: true }, RPC.Mode.ALL);
+        
+                                        // Update the score
+                                        this.updateScore(this.score + 1); // Corrected score update
+                                    }
+                                }
+                            }
+        
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                        }
+                    });
+                } else {
+                    console.error('Permission denied');
+                    alert('Permission denied, Game will not work properly');
+                }
+            })
+            .catch(console.error);
+        } else {
+            // For browsers that do not require permission
             window.addEventListener('devicemotion', (event) => {
                 let acceleration = event.accelerationIncludingGravity;
                 let currentTime = new Date().getTime();
                 if ((currentTime - lastUpdate) > 100) {
                     let diffTime = currentTime - lastUpdate;
                     lastUpdate = currentTime;
-
+    
                     x = acceleration.x;
                     y = acceleration.y;
                     z = acceleration.z;
-
+    
                     let speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
-
+    
                     if (speed > this.shakeThreshold) {
                         // Shake detected, increase shake progress based on speed
                         if (this.fishDetected) {
                             this.shakeProgress += 15; // Increase progress based on speed
-
+    
                             const centerX = this.cameras.main.width / 2;
-                            const centerY = this.cameras.main.height / 2;
+                            const shakeMeterY = 150; // Corrected position
                             
                             this.shakeMeter.clear();
                             this.shakeMeter.fillStyle(0x00ff00, 1);
-                            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, centerY - 10, this.shakeProgress, 20);
-
+                            this.shakeMeter.fillRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeProgress, 20);
+    
                             this.shakeMeter.lineStyle(2, 0x000000, 1);
-                            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, centerY - 10, this.shakeMeterMax, 20);
-
+                            this.shakeMeter.strokeRect(centerX - this.shakeMeterMax / 2, shakeMeterY, this.shakeMeterMax, 20);
+    
                             if (this.shakeProgress >= this.shakeMeterMax) {
                                 // Shake meter is full, catch the fish
-                                // const message = this.add.text(100, 100, 'Fish caught!', { fontSize: '32px', fill: '#fff' });
-                                // message.setOrigin(0.5);
-                                
                                 this.resetFishProgress();
-
+    
                                 RPC.call('endCatching', { fishID: this.currentFish, success: true }, RPC.Mode.ALL);
-
+    
                                 // Update the score
-                                this.updateScore(1);
+                                this.updateScore(this.score + 1); // Corrected score update
                             }
                         }
                     }
-
+    
                     lastX = x;
                     lastY = y;
                     lastZ = z;
