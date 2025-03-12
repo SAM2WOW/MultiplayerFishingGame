@@ -210,6 +210,41 @@
 
     document.getElementById('qr-container').style.display = "none";
 
+    window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('restart')) {
+            console.log("Restart detected! Auto-starting the host game...");
+            document.getElementById('host-btn').click(); // Simulate clicking "Start as Host"
+        }
+    };
+
+    this.requestMotionPermission = async () => {
+        if (
+            typeof DeviceMotionEvent.requestPermission === "function" &&
+            typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+            try {
+                const motionPermission = await DeviceMotionEvent.requestPermission();
+                const orientationPermission = await DeviceOrientationEvent.requestPermission();
+
+                if (motionPermission === "granted" && orientationPermission === "granted") {
+                    console.log("Motion and Orientation permissions granted!");
+                    // this.startMotionListeners();
+                } else {
+                    console.warn("Motion permissions denied.");
+                    alert("Motion permissions are required to play this game.");
+                }
+            } catch (error) {
+                console.error("Error requesting motion permission:", error);
+                alert("Motion permissions are required. Please allow them in Safari Settings.");
+            }
+        } else {
+            console.log("DeviceMotionEvent does not require permission on this browser.");
+            // this.startMotionListeners(); // Start normally if permission is not needed
+        }
+    };
+
+
     // Add button click handlers
     document.getElementById('host-btn').addEventListener('click', function() {
         insertCoin({ streamMode: true }).then(() => {
@@ -232,6 +267,9 @@
             document.getElementById('container').style.display = 'none';
             document.getElementById('qr-container').style.display = 'inherit';
             const game = new Phaser.Game(controller_config);
+
+            //ask for ios permission
+            this.requestMotionPermission();
 
             game.scene.start('ControllerScene', { RPC, myPlayer });
         });

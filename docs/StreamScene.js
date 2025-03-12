@@ -360,7 +360,8 @@ class StreamScene extends Phaser.Scene {
                     callback: () => {
                         // location.reload();
                         //open the webpage instead
-                        window.open('https://sam2wow.github.io/MultiplayerFishingGame/', '_self');
+                        // window.open('https://sam2wow.github.io/MultiplayerFishingGame?restart=true', '_self');
+                        window.open('https://sam2wow.github.io/MultiplayerFishingGame', '_self');
                     }
                 });
                 

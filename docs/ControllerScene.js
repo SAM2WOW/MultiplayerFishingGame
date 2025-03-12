@@ -244,6 +244,7 @@ class ControllerScene extends Phaser.Scene {
         let lastUpdate = 0;
         let x = 0, y = 0, z = 0, lastX = 0, lastY = 0, lastZ = 0;
 
+        
         // request permission for device motion
         if (typeof DeviceMotionEvent.requestPermission === 'function') {
             DeviceMotionEvent.requestPermission()
