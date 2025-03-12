@@ -270,7 +270,7 @@
     });
     
     document.getElementById('player-btn').addEventListener('click', () => {
-        await window.requestMotionPermission(); // ✅ Ensures it happens inside the user event!
+        window.requestMotionPermission(); // ✅ Ensures it happens inside the user event!
 
         insertCoin({ streamMode: false }).then(() => {
             document.getElementById('container').style.display = 'none';
