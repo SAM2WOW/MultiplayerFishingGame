@@ -218,7 +218,7 @@
         }
     };
 
-    this.requestMotionPermission = async () => {
+    window.requestMotionPermission = async () => {
         if (
             typeof DeviceMotionEvent.requestPermission === "function" &&
             typeof DeviceOrientationEvent.requestPermission === "function"
@@ -262,14 +262,14 @@
         });
     });
     
-    document.getElementById('player-btn').addEventListener('click', function() {
+    document.getElementById('player-btn').addEventListener('click', () => {
         insertCoin({ streamMode: false }).then(() => {
             document.getElementById('container').style.display = 'none';
             document.getElementById('qr-container').style.display = 'inherit';
             const game = new Phaser.Game(controller_config);
 
             //ask for ios permission
-            this.requestMotionPermission();
+            window.requestMotionPermission();
 
             game.scene.start('ControllerScene', { RPC, myPlayer });
         });
