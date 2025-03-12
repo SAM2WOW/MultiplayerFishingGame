@@ -32,7 +32,7 @@ class Fish {
 
         // Create the fish sprite
         this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
-        this.sprite.setScale(0.5);
+        this.sprite.setScale(0.75);
         
         // functions
         this.setRandomDirection();
