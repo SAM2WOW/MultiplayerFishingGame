@@ -42,6 +42,7 @@ class StreamScene extends Phaser.Scene {
         // load game sounds
         this.load.audio('ready', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/ready.mp3');
         this.load.audio('count', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/count.mp3');
+        this.load.audio('go', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/go.mp3');
         this.load.audio('gameover', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/gameover.mp3');
     }
     
@@ -55,7 +56,7 @@ class StreamScene extends Phaser.Scene {
         bg.setTint(0x2288cc);
         
         // add splash emitter
-        this.splashEmitter = this.add.particles('circle', {
+        this.splashEmitter = particles.createEmitter({
             x: width / 2,
             y: height / 2,
             lifespan: 1000,
@@ -63,8 +64,8 @@ class StreamScene extends Phaser.Scene {
             scale: { start: 0.8, end: 0 },
             gravityY: 150,
             blendMode: 'ADD',
-            emitting: false,
-            tint: 0x87CEEB // Sky blue color
+            tint: 0x87CEEB, // Sky blue color
+            on: false // Initially not emitting
         });
 
         // Add ripples
@@ -132,6 +133,8 @@ class StreamScene extends Phaser.Scene {
                 this.sound.play('count');
             } else {
                 readyText.setText('Go!');
+                this.sound.play('go');
+                
                 this.time.addEvent({
                 delay: 500, // 0.5 second
                 callback: () => {
@@ -261,7 +264,7 @@ class StreamScene extends Phaser.Scene {
 
                 // Destroy the text after 3 seconds
                 this.time.addEvent({
-                    delay: 3000,
+                    delay: 2000,
                     callback: () => {
                         catchText.destroy();
                     }
