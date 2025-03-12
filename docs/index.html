@@ -269,11 +269,34 @@
             const game = new Phaser.Game(controller_config);
 
             //ask for ios permission
-            window.requestMotionPermission();
+            // window.requestMotionPermission();
+            if (
+                    typeof DeviceMotionEvent.requestPermission === "function" &&
+                    typeof DeviceOrientationEvent.requestPermission === "function"
+                ) {
+                    try {
+                        const motionPermission = await DeviceMotionEvent.requestPermission();
+                        const orientationPermission = await DeviceOrientationEvent.requestPermission();
 
-            game.scene.start('ControllerScene', { RPC, myPlayer });
-        });
-    });
+                        if (motionPermission === "granted" && orientationPermission === "granted") {
+                            console.log("Motion and Orientation permissions granted!");
+                            // this.startMotionListeners();
+                        } else {
+                            console.warn("Motion permissions denied.");
+                            alert("Motion permissions are required to play this game.");
+                        }
+                    } catch (error) {
+                        console.error("Error requesting motion permission:", error);
+                        alert("Motion permissions are required. Please allow them in Safari Settings.");
+                    }
+                } else {
+                    console.log("DeviceMotionEvent does not require permission on this browser.");
+                    // this.startMotionListeners(); // Start normally if permission is not needed
+                }
+
+                    game.scene.start('ControllerScene', { RPC, myPlayer });
+                });
+            });
 
     // test stream
     // document.getElementById('container').style.display = 'none';
