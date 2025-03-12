@@ -61,6 +61,16 @@ class ControllerScene extends Phaser.Scene {
             }
         });
 
+        // listen for game over event
+        RPC.register('gameOver', (data) => {
+            // delete score text
+            this.scoreText.destroy();
+            this.currentFish = 0;
+
+            this.shakeMessage = this.add.text(width / 2, height / 2, 'Game Over!',
+                { fontSize: '48px', fill: '#ffffff' }).setOrigin(0.5);
+        });
+
         // display the player name on top left with a red color
         //this.add.text(10, 10, this.playerData.state.profile.name, { fontSize: '24px', fill: '#ff0000' });
 
