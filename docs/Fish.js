@@ -56,7 +56,7 @@ class Fish {
         scene.fishList.push(this);
 
         // check state if the fish is being catched or caught
-        this.states = ['idle', 'catched', 'caught'];
+        this.states = ['idle', 'pulling', 'caught'];
         this.state = this.states[0];
     }
 
@@ -127,7 +127,7 @@ class Fish {
         }
 
         // start catching fish
-        this.state = 'catched';
+        this.state = 'pulling';
 
         // change the tint to red
         this.sprite.setTint(0xff0000);
@@ -135,7 +135,7 @@ class Fish {
     }
 
     endCatchingFish(success) {
-        if (this.state != 'catched') {
+        if (this.state != 'pulling') {
             return;
         }
         
