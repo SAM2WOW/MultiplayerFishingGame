@@ -10,7 +10,7 @@ class StreamScene extends Phaser.Scene {
         this.players = {};
 
         this.gameStarted = false;
-        this.gameTime = 120; // 120 seconds
+        this.gameTime = 10; // 120 seconds
     }
 
     preload() {
@@ -28,6 +28,16 @@ class StreamScene extends Phaser.Scene {
             // this.load.image(`fish_${i}`, `/MultiplayerFishingGame/sprites/fish_illus/fish_${i}.png`);
             this.load.image(`fish_${i}`, `https://sam2wow.github.io/MultiplayerFishingGame/sprites/fish_illus/fish_${i}.png`);
         }
+
+        // load the bgm.mp3
+        this.load.audio('bgm', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/bgm.mp3');
+
+        // load the fish catch sound
+        this.load.audio('catch', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/catch.mp3');
+        this.load.audio('miss', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/miss.mp3');
+
+        // load game over sound
+        this.load.audio('gameover', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/gameover.mp3');
     }
     
     create(data) {
@@ -38,6 +48,10 @@ class StreamScene extends Phaser.Scene {
         const bg = this.add.sprite(width/2, height/2, 'background');
         bg.setDisplaySize(width, height);
         bg.setTint(0x2288cc);
+
+        // Add background music and make it not loop
+        this.sound.add('bgm', { loop: true });
+        this.sound.play('bgm');
         
         // Add ripples
         // for (let i = 0; i < 8; i++) {
@@ -256,6 +270,9 @@ class StreamScene extends Phaser.Scene {
 
                 console.log('Game over!');
                 this.timeText.destroy();
+
+                // play game over sound
+                this.sound.play('gameover');
 
                 // remove all the fish
                 this.fishList.forEach(fish => fish.destroy());
