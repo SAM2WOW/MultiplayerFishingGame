@@ -174,8 +174,6 @@
     // Game configuration
     const stream_config = {
         type: Phaser.AUTO,
-        width: 1280,
-        height: 720,
         backgroundColor: '#1c6ba0',
         scene: [StreamScene],
         physics: {
@@ -184,7 +182,14 @@
                 gravity: { y: 0 },
                 debug: false
             }
-        }
+        },
+        // Allows Phaser canvas to be responsive to browser sizing
+        scale: {
+            mode: Phaser.Scale.ENVELOP,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: 1920,
+            height: 1080,
+        },
     };
 
     const controller_config = {
