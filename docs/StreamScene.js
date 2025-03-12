@@ -354,7 +354,7 @@ class StreamScene extends Phaser.Scene {
                 // call the RPC
                 this.gameOverRPC();
 
-                // Restart game after 15 seconds
+                // Restart game after 20 seconds
                 this.time.addEvent({
                     delay: 20000,
                     callback: () => {

@@ -76,7 +76,7 @@ class ControllerScene extends Phaser.Scene {
         RPC.register('gameOver', (data) => {
             if (data) {
             }
-            
+
             // delete score text
             this.scoreText.destroy();
             this.currentFish = 0;
@@ -86,6 +86,17 @@ class ControllerScene extends Phaser.Scene {
             
             // play the game over sound
             this.sound.play('gameover');
+
+            // close the page agter a bit
+            this.time.addEvent({
+                delay: 20000,
+                callback: () => {
+                    // location.reload();
+                    //open the webpage instead
+                    //window.open('https://sam2wow.github.io/MultiplayerFishingGame/', '_self');
+                    window.location.href = "about:blank";
+                }
+            });
         });
 
         // display the player name on top left with a red color
