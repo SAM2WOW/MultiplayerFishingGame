@@ -166,33 +166,6 @@ class StreamScene extends Phaser.Scene {
             }
         });
 
-        // Add fish
-        // for (let i = 0; i < this.amountOfFish; i++) {
-        //     const x = Math.random() * width;
-        //     const y = Math.random() * height;
-        //     new Fish(this, x, y, i);
-        // }
-        
-        // // Add a few more ripples on top
-        // for (let i = 0; i < 5; i++) {
-        //     const x = Math.random() * width;
-        //     const y = Math.random() * height;
-        //     const ripple = this.add.sprite(x, y, 'ripple');
-        //     ripple.setAlpha(0.2);
-        //     ripple.setScale(0.3 + Math.random() * 0.4);
-            
-        //     // Animate ripple
-        //     this.tweens.add({
-        //         targets: ripple,
-        //         alpha: 0,
-        //         scale: ripple.scale + 0.3,
-        //         duration: 1500 + Math.random() * 1500,
-        //         repeat: -1,
-        //         yoyo: false,
-        //         repeatDelay: Math.random() * 2000
-        //     });
-        // }
-
         // Access RPC from the data object
         const { RPC, playerList } = data;
 
