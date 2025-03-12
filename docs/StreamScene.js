@@ -55,6 +55,9 @@ class StreamScene extends Phaser.Scene {
         bg.setDisplaySize(width, height);
         bg.setTint(0x2288cc);
         
+        // Add particle manager
+        const particles = this.add.particles('circle');
+
         // add splash emitter
         this.splashEmitter = particles.createEmitter({
             x: width / 2,
