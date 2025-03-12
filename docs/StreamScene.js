@@ -55,20 +55,15 @@ class StreamScene extends Phaser.Scene {
         bg.setDisplaySize(width, height);
         bg.setTint(0x2288cc);
         
-        // Add particle manager
-        const particles = this.add.particles('circle');
-
         // add splash emitter
-        this.splashEmitter = particles.createEmitter({
-            x: width / 2,
-            y: height / 2,
+        this.splashEmitter = this.add.particles(width / 2, height / 2 ,'circle', {
             lifespan: 1000,
             speed: { min: 150, max: 250 },
             scale: { start: 0.8, end: 0 },
             gravityY: 150,
             blendMode: 'ADD',
             tint: 0x87CEEB, // Sky blue color
-            on: false // Initially not emitting
+            emitting: false
         });
 
         // Add ripples

@@ -21,18 +21,18 @@ class Fish {
 
         // speed is based on rarity
         if (this.rarity == 'common') {
-            this.speed = 20.0;
+            this.speed = 30.0;
         }
         else if (this.rarity == 'rare') {
             this.speed = 60.0;
         }
         else {
-            this.speed = 100.0;
+            this.speed = 200.0;
         }
 
         // Create the fish sprite
         this.sprite = scene.add.sprite(x, y, `fish_${this.id}`);
-        this.sprite.setScale(0.75);
+        this.sprite.setScale(0.7);
         
         // functions
         this.setRandomDirection();
