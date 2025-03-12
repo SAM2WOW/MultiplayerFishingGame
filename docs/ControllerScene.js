@@ -143,19 +143,28 @@ class ControllerScene extends Phaser.Scene {
                 });
         };
 
-        // Detect available cameras and select the back camera
+        // Detect available cameras and select the correct back camera
         navigator.mediaDevices.enumerateDevices()
             .then(devices => {
                 const videoDevices = devices.filter(device => device.kind === "videoinput");
-                
-                // Try to find a back-facing camera
-                let backCamera = videoDevices.find(device => device.label.toLowerCase().includes("back"));
 
-                if (backCamera) {
-                    console.log("Using back-facing camera:", backCamera.label);
-                    startScanner(backCamera.deviceId);
+                let preferredCamera = null;
+
+                for (let device of videoDevices) {
+                    const label = device.label.toLowerCase();
+                    
+                    // Prioritize back cameras that are NOT wide-angle
+                    if (label.includes("back") && !label.includes("wide") && !label.includes("ultra")) {
+                        preferredCamera = device;
+                        break;
+                    }
+                }
+
+                if (preferredCamera) {
+                    console.log("Using preferred back camera:", preferredCamera.label);
+                    startScanner(preferredCamera.deviceId);
                 } else {
-                    console.warn("No back camera found, using default.");
+                    console.warn("No preferred back camera found, using default.");
                     startScanner({ facingMode: "environment" });
                 }
             })
