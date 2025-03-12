@@ -211,6 +211,11 @@ class StreamScene extends Phaser.Scene {
 
         ////////////END SCOREBOARD////////////////
 
+        this.gameOverRPC = () => {
+            // call the RPC for gameOver
+            RPC.call('gameOver', { playerID: "0000" }, RPC.Mode.ALL);
+        };
+
         // add test case
         RPC.register('testFishing', (data, caller) => {
             console.log("player info: ", caller);
@@ -345,8 +350,9 @@ class StreamScene extends Phaser.Scene {
                     fill: '#ffffff'
                 }).setOrigin(0.5);
 
-                // call the RPC for gameOver
-                RPC.call('gameOver', { playerID: "0000" }, RPC.Mode.ALL);
+                
+                // call the RPC
+                this.gameOverRPC();
 
                 // Restart game after 15 seconds
                 this.time.addEvent({
