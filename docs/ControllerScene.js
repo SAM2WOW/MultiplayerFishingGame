@@ -114,11 +114,6 @@ class ControllerScene extends Phaser.Scene {
                 // only react when the text starts with fg
                 // example: fg0, fg1
                 if (decodedText.startsWith('fg')) {
-                    if (this.currentFish !== null) {
-                        console.log('Already catching a fish');
-                        return;
-                    }
-
                     // get the fish id
                     let fishID = parseInt(decodedText.substring(2));
                     console.log('Fish ID:', fishID);
@@ -188,13 +183,16 @@ class ControllerScene extends Phaser.Scene {
             this.fishDetected = true;
 
             this.time.delayedCall(7000, () => {
-                this.shakeMessage.destroy(); // Corrected variable name
-                RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
-                this.resetFishProgress();
-
-                // play the miss sound
-                this.sound.play('miss');
-                this.sound.play('miss_people');
+                if (this.fishDetected) {
+                    // Fish was not caught in time
+                    this.shakeMessage.destroy(); // Corrected variable name
+                    RPC.call('endCatching', { fishID: this.currentFish, success: false }, RPC.Mode.ALL);
+                    this.resetFishProgress();
+    
+                    // play the miss sound
+                    this.sound.play('miss');
+                    this.sound.play('miss_people');
+                }
             });
 
             // Create the shake meter

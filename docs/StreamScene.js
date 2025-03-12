@@ -29,6 +29,9 @@ class StreamScene extends Phaser.Scene {
             this.load.image(`fish_${i}`, `https://sam2wow.github.io/MultiplayerFishingGame/sprites/fish_illus/fish_${i}.png`);
         }
 
+        // load circle sprite for emitters
+        this.load.image('circle', 'https://sam2wow.github.io/MultiplayerFishingGame/sprites/whitecircle.png');
+
         // load the bgm.mp3
         this.load.audio('bgm', 'https://sam2wow.github.io/MultiplayerFishingGame/sounds/bgm.mp3');
 
@@ -51,6 +54,19 @@ class StreamScene extends Phaser.Scene {
         bg.setDisplaySize(width, height);
         bg.setTint(0x2288cc);
         
+        // add splash emitter
+        this.splashEmitter = this.add.particles('circle', {
+            x: x,
+            y: y,
+            lifespan: 1000,
+            speed: { min: 150, max: 250 },
+            scale: { start: 0.8, end: 0 },
+            gravityY: 150,
+            blendMode: 'ADD',
+            emitting: false,
+            tint: 0x87CEEB // Sky blue color
+        });
+
         // Add ripples
         // for (let i = 0; i < 8; i++) {
         //     const x = Math.random() * width;
@@ -261,24 +277,7 @@ class StreamScene extends Phaser.Scene {
                 this.sound.play('catch', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
                 // Create splash particle effect
-                const splash = this.add.particles('fish').createEmitter({
-                    x: fishPosition.x,
-                    y: fishPosition.y,
-                    speed: { min: -200, max: 200 },
-                    angle: { min: 0, max: 360 },
-                    scale: { start: 0.5, end: 0 },
-                    alpha: { start: 1, end: 0 },
-                    lifespan: 500,
-                    blendMode: 'ADD'
-                });
-
-                // Destroy the emitter after the splash effect
-                this.time.addEvent({
-                    delay: 500,
-                    callback: () => {
-                        splash.stop();
-                    }
-                });
+                this.splashEmitter.explode(10, fishPosition.x, fishPosition.y);
 
                 // Display catch text at fish position
                 const catchText = this.add.text(fishPosition.x, fishPosition.y, `Caught by ${this.players[caller.id].name}!`, {
@@ -299,24 +298,7 @@ class StreamScene extends Phaser.Scene {
                 this.sound.play('miss', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
                 // Create a puff cloud particle effect
-                const puff = this.add.particles('fish').createEmitter({
-                    x: fishPosition.x,
-                    y: fishPosition.y,
-                    speed: { min: -100, max: 100 },
-                    angle: { min: 0, max: 360 },
-                    scale: { start: 0.5, end: 0 },
-                    alpha: { start: 1, end: 0 },
-                    lifespan: 500,
-                    blendMode: 'ADD'
-                });
-
-                // Destroy the emitter after the puff effect
-                this.time.addEvent({
-                    delay: 500,
-                    callback: () => {
-                        puff.stop();
-                    }
-                });
+                this.splashEmitter.explode(10, fishPosition.x, fishPosition.y);
             }
 
             // BUG: the print statement was being interpreted as print screen on browser
@@ -329,7 +311,7 @@ class StreamScene extends Phaser.Scene {
 
         
     }
-    
+
     update(time, delta) {
         // Update all fish
         this.fishList.forEach(fish => fish.update(time, delta));
