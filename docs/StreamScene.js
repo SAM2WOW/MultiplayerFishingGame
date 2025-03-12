@@ -56,8 +56,8 @@ class StreamScene extends Phaser.Scene {
         
         // add splash emitter
         this.splashEmitter = this.add.particles('circle', {
-            x: x,
-            y: y,
+            x: width / 2,
+            y: height / 2,
             lifespan: 1000,
             speed: { min: 150, max: 250 },
             scale: { start: 0.8, end: 0 },
@@ -277,7 +277,8 @@ class StreamScene extends Phaser.Scene {
                 this.sound.play('catch', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
                 // Create splash particle effect
-                this.splashEmitter.explode(10, fishPosition.x, fishPosition.y);
+                this.splashEmitter.setPosition(fishPosition.x, fishPosition.y);
+                this.splashEmitter.explode(4 + Math.floor(Math.random() * 5));
 
                 // Display catch text at fish position
                 const catchText = this.add.text(fishPosition.x, fishPosition.y, `Caught by ${this.players[caller.id].name}!`, {
@@ -298,7 +299,9 @@ class StreamScene extends Phaser.Scene {
                 this.sound.play('miss', { volume: 1.0, loop: false, delay: 0, spatial: true, x: fishPosition.x, y: fishPosition.y });
 
                 // Create a puff cloud particle effect
-                this.splashEmitter.explode(10, fishPosition.x, fishPosition.y);
+                // random amount from 4 - 8
+                this.splashEmitter.setPosition(fishPosition.x, fishPosition.y);
+                this.splashEmitter.explode(4 + Math.floor(Math.random() * 5));
             }
 
             // BUG: the print statement was being interpreted as print screen on browser
