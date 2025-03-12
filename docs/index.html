@@ -211,36 +211,36 @@
     document.getElementById('qr-container').style.display = "none";
 
     // Add button click handlers
-    // document.getElementById('host-btn').addEventListener('click', function() {
-    //     insertCoin({ streamMode: true }).then(() => {
-    //         document.getElementById('container').style.display = 'none';
-    //         const game = new Phaser.Game(stream_config);
+    document.getElementById('host-btn').addEventListener('click', function() {
+        insertCoin({ streamMode: true }).then(() => {
+            document.getElementById('container').style.display = 'none';
+            const game = new Phaser.Game(stream_config);
 
-    //         const playerList = [];
-    //         onPlayerJoin((player) => {
-    //             console.log(`${player.id} SCREEN STARTED!`);
-    //             playerList.push(player);
-    //         });
-    //         // console.log(playerList);
+            const playerList = [];
+            onPlayerJoin((player) => {
+                console.log(`${player.id} SCREEN STARTED!`);
+                playerList.push(player);
+            });
+            // console.log(playerList);
 
-    //         game.scene.start('StreamScene', { RPC, playerList });
-    //     });
-    // });
+            game.scene.start('StreamScene', { RPC, playerList });
+        });
+    });
     
-    // document.getElementById('player-btn').addEventListener('click', function() {
-    //     insertCoin({ streamMode: false }).then(() => {
-    //         document.getElementById('container').style.display = 'none';
-    //         document.getElementById('qr-container').style.display = 'inherit';
-    //         const game = new Phaser.Game(controller_config);
+    document.getElementById('player-btn').addEventListener('click', function() {
+        insertCoin({ streamMode: false }).then(() => {
+            document.getElementById('container').style.display = 'none';
+            document.getElementById('qr-container').style.display = 'inherit';
+            const game = new Phaser.Game(controller_config);
 
-    //         game.scene.start('ControllerScene', { RPC, myPlayer });
-    //     });
-    // });
+            game.scene.start('ControllerScene', { RPC, myPlayer });
+        });
+    });
 
     // test stream
-    document.getElementById('container').style.display = 'none';
-    const game = new Phaser.Game(stream_config);
-    game.scene.start('StreamScene', { RPC });
+    // document.getElementById('container').style.display = 'none';
+    // const game = new Phaser.Game(stream_config);
+    // game.scene.start('StreamScene', { RPC });
 
   </script>
 </body>
